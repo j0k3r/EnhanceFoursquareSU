@@ -15,6 +15,7 @@
       "*://*.foursquare.com/edit/*"
     ],
     "run_at": "document_end",
+    "css": ["css/enhance-su.css"],
     "js": ["js/vendor/jquery-2.0.3.min.js", "js/enhance-su.js"]
   }]
 }

@@ -1,0 +1,12 @@
+#enhance-su-block {
+    border-bottom: 1px solid #e8e9eb;
+    padding-bottom: 5px;
+}
+
+#enhance-su-block span {
+    display: block
+}
+
+#enhance-su-block b {
+    font-weight: bold;
+}
