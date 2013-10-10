@@ -1,0 +1,20 @@
+{
+  "name": "Enhance Foursquare SU",
+  "version": "0.1",
+  "description": "Add some enhancement to the Foursquare SU part",
+  "manifest_version": 2,
+  "icons": {
+    "16": "img/icon16.png",
+    "48": "img/icon48.png",
+    "128": "img/icon128.png"
+  },
+  "web_accessible_resources": ["js/vendor/jquery-2.0.3.min.js", "js/vendor/jquery-2.0.3.min.map"],
+  "content_scripts": [{
+    "matches": [
+      "*://foursquare.com/edit/*",
+      "*://*.foursquare.com/edit/*"
+    ],
+    "run_at": "document_end",
+    "js": ["js/vendor/jquery-2.0.3.min.js", "js/enhance-su.js"]
+  }]
+}
