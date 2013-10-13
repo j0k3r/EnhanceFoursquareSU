@@ -1,4 +1,6 @@
 $(document).ready(function() {
+    "use strict";
+
     function initializeEnhanceBlock () {
         // avoid duplicate enhancement
         if ($('#enhance-su-block').html()) {
@@ -16,25 +18,26 @@ $(document).ready(function() {
      * - Move both link above the venue name
      */
     function enhanceSearch () {
+        var searchLink = $('div.venueInfoText a.searchLink');
+
         // avoid duplicate enhancement
-        if ($('#enhance-su-search').html()) {
+        if ($('#enhance-su-search').html() || !searchLink.html()) {
             return;
         }
 
-        searchLink = $('div.venueInfoText a.searchLink');
         searchLink.hide();
 
-        hrefGoogle = searchLink
+        var hrefGoogle = searchLink
             .attr('href')
             .replace('bing.com', 'google.com/search');
 
-        searchGoogle = '<a target="_blank" href="'+hrefGoogle+'">Google</a>';
+        var searchGoogle = '<a target="_blank" href="'+hrefGoogle+'">Google</a>';
 
-        hrefMaps = 'https://maps.google.com/maps?q=' +
+        var hrefMaps = 'https://maps.google.com/maps?q=' +
             $('h4 a.venue').html() + ' ' +
             $('div.venueInfoText p.addressArea').html();
 
-        searchMaps = '<a target="_blank" href="' + hrefMaps + '">Google Maps</a>';
+        var searchMaps = '<a target="_blank" href="' + hrefMaps + '">Google Maps</a>';
 
         $('#enhance-su-block').append('<span id="enhance-su-search">Search on: ' + searchGoogle + ' - ' + searchMaps + '</span>');
     }
@@ -54,7 +57,8 @@ $(document).ready(function() {
 
         // loop through all value from the edit panel and find those with empty value
         var emptyValues = [];
-        $('li.field.simpleField :input').each(function( index ) {
+        var curItem = '';
+        $('li.field.simpleField :input').each(function() {
             curItem = $(this);
             if ('' === curItem.val()) {
                 emptyValues.push(curItem.parent().prev('div').html());
