@@ -1,5 +1,16 @@
 $(document).ready(function() {
     "use strict";
+    var gmapsApi = '//maps.googleapis.com/maps/api/geocode/json';
+
+    /**
+     * Set first letter to lower case.
+     * Used for route name
+     *
+     * @from http://stackoverflow.com/a/1026087/569101
+     */
+    function lowercaseFirstLetter(string) {
+        return string.charAt(0).toLowerCase() + string.slice(1);
+    }
 
     function initializeEnhanceBlock () {
         // avoid duplicate enhancement
@@ -34,8 +45,8 @@ $(document).ready(function() {
         var searchGoogle = '<a target="_blank" href="'+hrefGoogle+'">Google</a>';
 
         var hrefMaps = 'https://maps.google.com/maps?q=' +
-            $('h4 a.venue').html() + ' ' +
-            $('div.venueInfoText p.addressArea').html();
+            encodeURIComponent($('h4 a.venue').html()) + ' ' +
+            encodeURIComponent($('div.venueInfoText p.addressArea').html());
 
         var searchMaps = '<a target="_blank" href="' + hrefMaps + '">Google Maps</a>';
 
@@ -79,10 +90,190 @@ $(document).ready(function() {
         $('#enhance-su-block').append(text);
     }
 
+    /**
+     * Display a link beside the "Edit this location" in edition panel
+     * to automatically update address fields (address, state, zip & city) using Google Maps
+     * It's displayed only when we have an address in the form.
+     */
+    function displayFixAddress () {
+        // if edit panel doesn't exists or enhancement already exists
+        if (!$('div.editPanes div.editPane').html() || $('#enhance-su-auto-adress').html()) {
+            return;
+        }
+
+        // if there is no address, we won't try to improve it automatically
+        var address = $('li.field.simpleField[data-key="address"] input');
+        if ($('div.editPanes div.editPane').html() && (address && '' === address.val())) {
+            return;
+        }
+
+        $('div.editPanes div.editPane h3').append(' <span id="enhance-su-auto-adress"><a href="#">Fix address</a> <img style="display: none" src="//i.imgur.com/Srmlo6N.gif" /></span>');
+
+        // bind link
+        $('#enhance-su-auto-adress a').bind('click', function() {
+            $('.enhance-su-message-error').remove();
+            $('.enhance-su-message-warning').remove();
+
+            var addressFields = {
+                address: address,
+                state: $('li.field.simpleField[data-key="state"] input'),
+                zip: $('li.field.simpleField[data-key="zip"] input'),
+                city: $('li.field.simpleField[data-key="city"] input')
+            };
+
+            setAddressFromGoogle(
+                address.val(),
+                $('li.field.simpleField[data-key="city"] input').val(),
+                addressFields,
+                $(this).next('img')
+            );
+
+            return false;
+        });
+    }
+
+    /**
+     * Took an address and (optionnaly) a city and update form address with Google results
+     *
+     * @param  string  address
+     * @param  string  city
+     * @param  object  addressFormFields    Fields from the form
+     * @param  element loadingImg           Element to show/hide for interactivity
+     */
+    function setAddressFromGoogle (address, city, addressFormFields, loadingImg) {
+        loadingImg.show();
+
+        $.ajax({
+            type: "GET",
+            url: gmapsApi,
+            data: "address=" + encodeURIComponent(address) + "," + encodeURIComponent(city) + "&sensor=false",
+            dataType: "json",
+            success: function (data, textStatus, jqXHR) {
+                if (data.status !== "OK") {
+                    loadingImg.hide();
+                    return;
+                }
+
+                var gRoute = "";
+                var gStreeNumber = "";
+                var gLocality = "";
+                var gPostalTown = "";
+                var gAreaLvl1 = "";
+                var gAreaLvl1Short = "";
+                var gAreaLvl2 = "";
+                var gZip = "";
+                var gCountry = "";
+
+                // empty result ? Do nothing.
+                if (data.results.length <= 0) {
+                    loadingImg.hide();
+                    return;
+                }
+
+                if (data.results.length > 1) {
+                    $('<span class="enhance-su-message-warning">The result may be inaccurate, please check the data and correct if necessary.</span>').insertAfter('div.editPanes div.editPane h3');
+                }
+
+                for (var i = 0; i < data.results[0].address_components.length; i++) {
+                    var addressComponent = data.results[0].address_components[i];
+                    if (addressComponent.types.indexOf("route") > -1) {
+                        gRoute = addressComponent.long_name;
+                    } else {
+                        if (addressComponent.types.indexOf("street_number") > -1) {
+                            gStreeNumber = addressComponent.long_name;
+                        } else {
+                            if (addressComponent.types.indexOf("locality") > -1) {
+                                gLocality = addressComponent.long_name;
+                            } else {
+                                if (addressComponent.types.indexOf("postal_code") > -1) {
+                                    gZip = addressComponent.long_name;
+                                } else {
+                                    if (addressComponent.types.indexOf("administrative_area_level_1") > -1) {
+                                        gAreaLvl1 = addressComponent.long_name;
+                                        gAreaLvl1Short = addressComponent.short_name;
+                                    } else {
+                                        if (addressComponent.types.indexOf("administrative_area_level_2") > -1) {
+                                            gAreaLvl2 = addressComponent.long_name;
+                                        } else {
+                                            if (addressComponent.types.indexOf("country") > -1) {
+                                                gCountry = addressComponent.short_name;
+                                            } else {
+                                                if (addressComponent.types.indexOf("postal_town") > -1) {
+                                                    gPostalTown = addressComponent.long_name;
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                if (gRoute !== "") {
+                    var formattedAddress = data.results[0].formatted_address;
+                    var formattedAddressClean = gRoute.trim();
+                    if (gStreeNumber !== "") {
+                        if (formattedAddress.indexOf(gRoute) > formattedAddress.indexOf(gStreeNumber)) {
+                            formattedAddressClean = gStreeNumber + " " + lowercaseFirstLetter(formattedAddressClean);
+                        } else {
+                            formattedAddressClean += " " + gStreeNumber;
+                        }
+                    }
+
+                    if (formattedAddressClean !== addressFormFields.address.val()) {
+                        addressFormFields.address.val(formattedAddressClean);
+                        addressFormFields.address.css('color', 'limegreen');
+                    }
+                }
+
+                if (gPostalTown !== "") {
+                    gLocality = gPostalTown;
+                }
+
+                if (gZip !== addressFormFields.zip.val()) {
+                    addressFormFields.zip.val(gZip);
+                    addressFormFields.zip.css('color', 'limegreen');
+                }
+
+                if (gAreaLvl1 !== "" && gAreaLvl1 !== addressFormFields.state.val()) {
+                    addressFormFields.state.val(gAreaLvl1);
+                    addressFormFields.state.css('color', 'limegreen');
+                }
+
+                if (gLocality !== addressFormFields.city.val()) {
+                    addressFormFields.city.val(gLocality);
+                    addressFormFields.city.css('color', 'limegreen');
+                }
+
+                loadingImg.hide();
+            },
+            statusCode: {
+                0: function () {
+                    $('<span class="enhance-su-message-error">Google Maps API connector is not available, please try again later.</span>').insertAfter('div.editPanes div.editPane h3');
+                    loadingImg.hide();
+                },
+                403: function () {
+                    $('<span class="enhance-su-message-error">Permission denied using Google Maps API, please try again later.</span>').insertAfter('div.editPanes div.editPane h3');
+                    loadingImg.hide();
+                },
+                404: function () {
+                    $('<span class="enhance-su-message-error">Google Maps API connector not found, please try again later.</span>').insertAfter('div.editPanes div.editPane h3');
+                    loadingImg.hide();
+                },
+                500: function () {
+                    $('<span class="enhance-su-message-error">Google Maps API internal error, please try again later.</span>').insertAfter('div.editPanes div.editPane h3');
+                    loadingImg.hide();
+                }
+            }
+        });
+    }
+
     // be sure that every new venue will be updated
     setInterval(function() {
         initializeEnhanceBlock();
         enhanceSearch();
         displayEmptyValue();
+        displayFixAddress();
     }, 500);
 });

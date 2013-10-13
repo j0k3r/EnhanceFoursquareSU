@@ -4,7 +4,7 @@
 
 ## Enhancement
 
-### Search
+### Search links
 
   * Convert Bing.com link to Google.com (for "(search the web)")
   * Add a link to Google Maps
@@ -21,10 +21,19 @@
 
 ![](http://f.cl.ly/items/3r2B1E2X0L223B2u242M/8%20empty%20fields.png)
 
+### Ability to use Google Maps to fix automatically an addres
+
+  * call Google Maps API to fix address
+  * let the user to fix change or cancel them
+
+![](http://f.cl.ly/items/0a2F0Z0p092m2e1V333f/Capture%20d%E2%80%99%C3%A9cran%202013-10-13%20%C3%A0%2022.07.19.png)
+
+![](http://f.cl.ly/items/1T1y351v3p361D3m3w1C/Capture%20d%E2%80%99%C3%A9cran%202013-10-13%20%C3%A0%2022.07.28.png)
+
 ## How to use
 
 * Install the [Chrome extension](https://chrome.google.com/webstore/detail/jenkins-terminal-colors/njhooapdhhjehkemlbobcdenmdbiooml),
-* Just go on [Foursquare SU page](https://foursquare.com/edit)
+* Just go on [Superuser Tools page](https://foursquare.com/edit)
 * Enjoy improvment :)
 
 ## How to install for dev

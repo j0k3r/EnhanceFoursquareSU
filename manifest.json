@@ -3,6 +3,7 @@
   "version": "0.1",
   "description": "Add some enhancement to the Foursquare SU part",
   "manifest_version": 2,
+  "permissions": [ "http://maps.googleapis.com/" ],
   "icons": {
     "16": "img/icon16.png",
     "48": "img/icon48.png",

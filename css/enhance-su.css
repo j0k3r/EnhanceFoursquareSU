@@ -10,3 +10,15 @@
 #enhance-su-block b {
     font-weight: bold;
 }
+
+#enhance-su-auto-adress a {
+    font: normal 13px/140% "Helvetica Neue",Helvetica,Verdana,Arial,sans-serif-webkit-body
+}
+
+.enhance-su-message-error {
+    color: red;
+}
+
+.enhance-su-message-warning {
+    color: orange;
+}
