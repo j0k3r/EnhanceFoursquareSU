@@ -45,9 +45,16 @@ $(document).ready(function() {
 
         var searchGoogle = '<a target="_blank" href="'+hrefGoogle+'">Google</a>';
 
+        // remove crossStreet from address to get more accurate results
+        var address = $('div.venueInfoText p.addressArea').html();
+        var crossStreet = $('li.field.simpleField[data-key="crossStreet"] input').val();
+        if ('' !== crossStreet) {
+            address = address.replace(' ('+crossStreet+')', '');
+        }
+
         var hrefMaps = 'https://maps.google.com/maps?q=' +
             encodeURIComponent($('h4 a.venue').html()) + ' ' +
-            encodeURIComponent($('div.venueInfoText p.addressArea').html());
+            encodeURIComponent(address);
 
         var searchMaps = '<a target="_blank" href="' + hrefMaps + '">Google Maps</a>';
 
