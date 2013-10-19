@@ -1,6 +1,6 @@
 {
   "name": "Enhance Foursquare SU",
-  "version": "0.1",
+  "version": "0.2",
   "description": "Add some enhancement to the Foursquare SU part",
   "manifest_version": 2,
   "permissions": [ "http://maps.googleapis.com/" ],
@@ -13,7 +13,9 @@
   "content_scripts": [{
     "matches": [
       "*://foursquare.com/edit/*",
-      "*://*.foursquare.com/edit/*"
+      "*://*.foursquare.com/edit/*",
+      "*://*.foursquare.com/v/*",
+      "*://foursquare.com/v/*"
     ],
     "run_at": "document_end",
     "css": ["css/enhance-su.css"],

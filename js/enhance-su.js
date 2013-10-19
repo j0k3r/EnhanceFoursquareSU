@@ -1,6 +1,7 @@
 $(document).ready(function() {
     "use strict";
     var gmapsApi = '//maps.googleapis.com/maps/api/geocode/json';
+    var oldAddressValues = {};
 
     /**
      * Set first letter to lower case.
@@ -97,7 +98,7 @@ $(document).ready(function() {
      */
     function displayFixAddress () {
         // if edit panel doesn't exists or enhancement already exists
-        if (!$('div.editPanes div.editPane').html() || $('#enhance-su-auto-adress').html()) {
+        if (!$('div.editPanes div.editPane').html() || $('#enhance-su-auto-address').html()) {
             return;
         }
 
@@ -107,10 +108,10 @@ $(document).ready(function() {
             return;
         }
 
-        $('div.editPanes div.editPane h3').append(' <span id="enhance-su-auto-adress"><a href="#">Fix address</a> <img style="display: none" src="//i.imgur.com/Srmlo6N.gif" /></span>');
+        $('div.editPanes div.editPane h3').append(' <span id="enhance-su-auto-address"><a href="#">Fix address</a> <img style="display: none" src="//i.imgur.com/Srmlo6N.gif" /></span>');
 
         // bind link
-        $('#enhance-su-auto-adress a').bind('click', function() {
+        $('#enhance-su-auto-address a').bind('click', function() {
             $('.enhance-su-message-error').remove();
             $('.enhance-su-message-warning').remove();
 
@@ -123,10 +124,97 @@ $(document).ready(function() {
 
             setAddressFromGoogle(
                 address.val(),
-                $('li.field.simpleField[data-key="city"] input').val(),
+                addressFields.city.val(),
                 addressFields,
-                $(this).next('img')
+                $(this).next('img'),
+                'div.editPanes div.editPane h3'
             );
+
+            return false;
+        });
+    }
+
+    function displayFixAddressSuggestEdit () {
+        // if edit panel doesn't exists or enhancement already exists
+        if (!$('div.modalLoadingContainer div.inputArea').html() || $('#enhance-su-auto-address').html()) {
+            return;
+        }
+
+        // if there is no address, we won't try to improve it automatically
+        var address = $('input.formStyle.flagEditInput.address');
+        var latlong = $('input.formStyle.flagEditInput.ll');
+        if (address && '' === address.val() && latlong && '' === latlong.val()) {
+            return;
+        }
+
+        $('<div id="enhance-su-auto-address"><a href="#">Fix address</a> <img style="display: none" src="//i.imgur.com/Srmlo6N.gif" /></div>').insertAfter('input.formStyle.venueNameInput.flagEditInput');
+
+        // bind link
+        $('#enhance-su-auto-address a').bind('click', function(event) {
+            event.preventDefault();
+
+            $('.enhance-su-message-error').remove();
+            $('.enhance-su-message-warning').remove();
+
+            var addressFields = {
+                address: address,
+                state: $('input.formStyle.flagEditInput.state'),
+                zip: $('input.formStyle.flagEditInput.zip'),
+                city: $('input.formStyle.flagEditInput.city')
+            };
+
+            // keep old value to be able to rollback
+            if (jQuery.isEmptyObject(oldAddressValues)) {
+                oldAddressValues = {
+                    address: addressFields.address.val(),
+                    state: addressFields.state.val(),
+                    zip: addressFields.zip.val(),
+                    city: addressFields.city.val()
+                };
+            }
+
+            // use lat & long if we don't have an address
+            var addressSearchQuery = address.val();
+            var city = addressFields.city.val();
+            if ('' === addressSearchQuery) {
+                addressSearchQuery = latlong.val();
+                city = '';
+            }
+
+            setAddressFromGoogle(
+                addressSearchQuery,
+                city,
+                addressFields,
+                $(this).next('img'),
+                '#enhance-su-auto-address'
+            );
+
+            if (!$('#enhance-su-auto-address-rollback').html()) {
+                $('<span> - </span><a href="#" id="enhance-su-auto-address-rollback">rollback change</a>').insertAfter('#enhance-su-auto-address a');
+
+                $('#enhance-su-auto-address-rollback').bind('click', {addressFormFields: addressFields}, function(event) {
+                    // clean message since we rollback
+                    $('.enhance-su-message-error').remove();
+                    $('.enhance-su-message-warning').remove();
+
+                    event.data.addressFormFields.address.val(oldAddressValues.address);
+                    event.data.addressFormFields.address.css('color', '#4d4d4d');
+
+                    event.data.addressFormFields.zip.val(oldAddressValues.zip);
+                    event.data.addressFormFields.zip.css('color', '#4d4d4d');
+
+                    event.data.addressFormFields.state.val(oldAddressValues.state);
+                    event.data.addressFormFields.state.css('color', '#4d4d4d');
+
+                    event.data.addressFormFields.city.val(oldAddressValues.city);
+                    event.data.addressFormFields.city.css('color', '#4d4d4d');
+
+                    // rollback is done, remove link and reset old values
+                    $(this).prev('span').remove();
+                    $(this).remove();
+                    oldAddressValues = {};
+                });
+            }
 
             return false;
         });
@@ -140,13 +228,20 @@ $(document).ready(function() {
      * @param  object  addressFormFields    Fields from the form
      * @param  element loadingImg           Element to show/hide for interactivity
      */
-    function setAddressFromGoogle (address, city, addressFormFields, loadingImg) {
+    function setAddressFromGoogle (address, city, addressFormFields, loadingImg, insertMessageAfter) {
         loadingImg.show();
+
+        // don't add city if it's not provided
+        // could make bad result if it's combined with lat/long
+        var dataUrl = "sensor=false&address=" + encodeURIComponent(address);
+        if ('' !== city) {
+            dataUrl += "," + encodeURIComponent(city);
+        }
 
         $.ajax({
             type: "GET",
             url: gmapsApi,
-            data: "address=" + encodeURIComponent(address) + "," + encodeURIComponent(city) + "&sensor=false",
+            data: dataUrl,
             dataType: "json",
             success: function (data, textStatus, jqXHR) {
                 if (data.status !== "OK") {
@@ -171,7 +266,7 @@ $(document).ready(function() {
                 }
 
                 if (data.results.length > 1) {
-                    $('<span class="enhance-su-message-warning">The result may be inaccurate, please check the data and correct if necessary.</span>').insertAfter('div.editPanes div.editPane h3');
+                    $(insertMessageAfter).append('<span class="enhance-su-message-warning">The result may be inaccurate, please check the data and correct if necessary.</span>');
                 }
 
                 for (var i = 0; i < data.results[0].address_components.length; i++) {
@@ -222,7 +317,7 @@ $(document).ready(function() {
                     }
 
                     if (formattedAddressClean !== addressFormFields.address.val()) {
-                        addressFormFields.address.val(formattedAddressClean);
+                        addressFormFields.address.val(formattedAddressClean).change();
                         addressFormFields.address.css('color', 'limegreen');
                     }
                 }
@@ -232,17 +327,17 @@ $(document).ready(function() {
                 }
 
                 if (gZip !== addressFormFields.zip.val()) {
-                    addressFormFields.zip.val(gZip);
+                    addressFormFields.zip.val(gZip).change();
                     addressFormFields.zip.css('color', 'limegreen');
                 }
 
                 if (gAreaLvl1 !== "" && gAreaLvl1 !== addressFormFields.state.val()) {
-                    addressFormFields.state.val(gAreaLvl1);
+                    addressFormFields.state.val(gAreaLvl1).change();
                     addressFormFields.state.css('color', 'limegreen');
                 }
 
                 if (gLocality !== addressFormFields.city.val()) {
-                    addressFormFields.city.val(gLocality);
+                    addressFormFields.city.val(gLocality).change();
                     addressFormFields.city.css('color', 'limegreen');
                 }
 
@@ -250,19 +345,19 @@ $(document).ready(function() {
             },
             statusCode: {
                 0: function () {
-                    $('<span class="enhance-su-message-error">Google Maps API connector is not available, please try again later.</span>').insertAfter('div.editPanes div.editPane h3');
+                    $(insertMessageAfter).append('<span class="enhance-su-message-error">Google Maps API connector is not available, please try again later.</span>');
                     loadingImg.hide();
                 },
                 403: function () {
-                    $('<span class="enhance-su-message-error">Permission denied using Google Maps API, please try again later.</span>').insertAfter('div.editPanes div.editPane h3');
+                    $(insertMessageAfter).append('<span class="enhance-su-message-error">Permission denied using Google Maps API, please try again later.</span>');
                     loadingImg.hide();
                 },
                 404: function () {
-                    $('<span class="enhance-su-message-error">Google Maps API connector not found, please try again later.</span>').insertAfter('div.editPanes div.editPane h3');
+                    $(insertMessageAfter).append('<span class="enhance-su-message-error">Google Maps API connector not found, please try again later.</span>');
                     loadingImg.hide();
                 },
                 500: function () {
-                    $('<span class="enhance-su-message-error">Google Maps API internal error, please try again later.</span>').insertAfter('div.editPanes div.editPane h3');
+                    $(insertMessageAfter).append('<span class="enhance-su-message-error">Google Maps API internal error, please try again later.</span>');
                     loadingImg.hide();
                 }
             }
@@ -275,5 +370,6 @@ $(document).ready(function() {
         enhanceSearch();
         displayEmptyValue();
         displayFixAddress();
+        displayFixAddressSuggestEdit();
     }, 500);
 });

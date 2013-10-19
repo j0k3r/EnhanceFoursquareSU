@@ -11,14 +11,23 @@
     font-weight: bold;
 }
 
-#enhance-su-auto-adress a {
+div.accordian #enhance-su-auto-address {
+    border: 1px solid #c4e6ee;
+    border-radius: 4px;
+    padding: 5px;
+    margin-bottom: 5px;
+}
+
+#enhance-su-auto-address a, .enhance-su-message-error, .enhance-su-message-warning {
     font: normal 13px/140% "Helvetica Neue",Helvetica,Verdana,Arial,sans-serif-webkit-body
 }
 
 .enhance-su-message-error {
     color: red;
+    display: block;
 }
 
 .enhance-su-message-warning {
     color: orange;
+    display: block;
 }
