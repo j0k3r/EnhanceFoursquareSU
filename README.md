@@ -43,7 +43,7 @@
 
 ## How to use
 
-* Install the [Chrome extension](https://chrome.google.com/webstore/detail/jenkins-terminal-colors/njhooapdhhjehkemlbobcdenmdbiooml),
+* Install the Chrome extension (WIP...)
 * Just go on [Superuser Tools page](https://foursquare.com/edit)
 * Enjoy improvment :)
 
