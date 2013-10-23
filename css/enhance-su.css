@@ -11,14 +11,14 @@
     font-weight: bold;
 }
 
-div.accordian #enhance-su-auto-address {
+div.accordian div.suggest-edit#enhance-su-auto-address {
     border: 1px solid #c4e6ee;
     border-radius: 4px;
     padding: 5px;
     margin-bottom: 5px;
 }
 
-#enhance-su-auto-address a, .enhance-su-message-error, .enhance-su-message-warning {
+#enhance-su-auto-address a, .enhance-su-message-error, .enhance-su-message-warning, #enhance-su-auto-address span {
     font: normal 13px/140% "Helvetica Neue",Helvetica,Verdana,Arial,sans-serif-webkit-body
 }
 

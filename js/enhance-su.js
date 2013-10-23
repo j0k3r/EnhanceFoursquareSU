@@ -109,19 +109,20 @@ $(document).ready(function() {
             return;
         }
 
+        // since this function is used in an ajax environment, we need to ensure that oldAddressValues
+        // is empty after the first enhancement
+        oldAddressValues = {};
+
         // if there is no address, we won't try to improve it automatically
         var address = $('li.field.simpleField[data-key="address"] input');
         if ($('div.editPanes div.editPane').html() && (address && '' === address.val())) {
             return;
         }
 
-        $('div.editPanes div.editPane h3').append(' <span id="enhance-su-auto-address"><a href="#">Fix address</a> <img style="display: none" src="//i.imgur.com/Srmlo6N.gif" /></span>');
+        $('div.editPanes div.editPane h3').append('<div id="enhance-su-auto-address"><a href="#">Fix address</a> <img style="display: none" src="//i.imgur.com/Srmlo6N.gif" /></div>');
 
         // bind link
         $('#enhance-su-auto-address a').bind('click', function() {
-            $('.enhance-su-message-error').remove();
-            $('.enhance-su-message-warning').remove();
-
             var addressFields = {
                 address: address,
                 state: $('li.field.simpleField[data-key="state"] input'),
@@ -136,8 +137,6 @@ $(document).ready(function() {
                 $(this).next('img'),
                 'div.editPanes div.editPane h3'
             );
-
-            return false;
         });
     }
 
@@ -154,31 +153,16 @@ $(document).ready(function() {
             return;
         }
 
-        $('<div id="enhance-su-auto-address"><a href="#">Fix address</a> <img style="display: none" src="//i.imgur.com/Srmlo6N.gif" /></div>').insertAfter('input.formStyle.venueNameInput.flagEditInput');
+        $('<div class="suggest-edit" id="enhance-su-auto-address"><a href="#">Fix address</a> <img style="display: none" src="//i.imgur.com/Srmlo6N.gif" /></div>').insertAfter('input.formStyle.venueNameInput.flagEditInput');
 
         // bind link
-        $('#enhance-su-auto-address a').bind('click', function(event) {
-            event.preventDefault();
-
-            $('.enhance-su-message-error').remove();
-            $('.enhance-su-message-warning').remove();
-
+        $('#enhance-su-auto-address a').bind('click', function() {
             var addressFields = {
                 address: address,
                 state: $('input.formStyle.flagEditInput.state'),
                 zip: $('input.formStyle.flagEditInput.zip'),
                 city: $('input.formStyle.flagEditInput.city')
             };
-
-            // keep old value to be able to rollback
-            if (jQuery.isEmptyObject(oldAddressValues)) {
-                oldAddressValues = {
-                    address: addressFields.address.val(),
-                    state: addressFields.state.val(),
-                    zip: addressFields.zip.val(),
-                    city: addressFields.city.val()
-                };
-            }
 
             // use lat & long if we don't have an address
             var addressSearchQuery = address.val();
@@ -195,35 +179,43 @@ $(document).ready(function() {
                 $(this).next('img'),
                 '#enhance-su-auto-address'
             );
+        });
+    }
 
-            if (!$('#enhance-su-auto-address-rollback').html()) {
-                $('<span> - </span><a href="#" id="enhance-su-auto-address-rollback">rollback change</a>').insertAfter('#enhance-su-auto-address a');
+    /**
+     * Bind the rollback link
+     *
+     * @param  object addressFields
+     */
+    function bindAddressRollBack (addressFields) {
+        // once the rollback is display, we won't reload it
+        if ($('#enhance-su-auto-address-rollback').html()) {
+            return;
+        }
 
-                $('#enhance-su-auto-address-rollback').bind('click', {addressFormFields: addressFields}, function(event) {
-                    // clean message since we rollback
-                    $('.enhance-su-message-error').remove();
-                    $('.enhance-su-message-warning').remove();
+        $('<span> - </span><a href="#" id="enhance-su-auto-address-rollback">rollback change</a>').insertAfter('#enhance-su-auto-address a');
 
-                    event.data.addressFormFields.address.val(oldAddressValues.address);
-                    event.data.addressFormFields.address.css('color', '#4d4d4d');
+        $('#enhance-su-auto-address-rollback').bind('click', {addressFormFields: addressFields}, function(event) {
+            // clean message since we rollback
+            $('.enhance-su-message-error').remove();
+            $('.enhance-su-message-warning').remove();
 
-                    event.data.addressFormFields.zip.val(oldAddressValues.zip);
-                    event.data.addressFormFields.zip.css('color', '#4d4d4d');
+            event.data.addressFormFields.address.val(oldAddressValues.address);
+            event.data.addressFormFields.address.css('color', '#4d4d4d');
 
-                    event.data.addressFormFields.state.val(oldAddressValues.state);
-                    event.data.addressFormFields.state.css('color', '#4d4d4d');
+            event.data.addressFormFields.zip.val(oldAddressValues.zip);
+            event.data.addressFormFields.zip.css('color', '#4d4d4d');
 
-                    event.data.addressFormFields.city.val(oldAddressValues.city);
-                    event.data.addressFormFields.city.css('color', '#4d4d4d');
+            event.data.addressFormFields.state.val(oldAddressValues.state);
+            event.data.addressFormFields.state.css('color', '#4d4d4d');
 
-                    // rollback is done, remove link and reset old values
-                    $(this).prev('span').remove();
-                    $(this).remove();
-                    oldAddressValues = {};
-                });
-            }
+            event.data.addressFormFields.city.val(oldAddressValues.city);
+            event.data.addressFormFields.city.css('color', '#4d4d4d');
 
-            return false;
+            // rollback is done, remove link and reset old values
+            $(this).prev('span').remove();
+            $(this).remove();
+            oldAddressValues = {};
         });
     }
 
@@ -236,7 +228,24 @@ $(document).ready(function() {
      * @param  element loadingImg           Element to show/hide for interactivity
      */
     function setAddressFromGoogle (address, city, addressFormFields, loadingImg, insertMessageAfter) {
+        $('.enhance-su-message-error').remove();
+        $('.enhance-su-message-warning').remove();
+
         loadingImg.show();
+
+        // keep old value to be able to rollback
+        if (jQuery.isEmptyObject(oldAddressValues)) {
+            oldAddressValues = {
+                address: addressFormFields.address.val(),
+                state: addressFormFields.state.val(),
+                zip: addressFormFields.zip.val(),
+                city: addressFormFields.city.val()
+            };
+        }
+
+        // will be set to true if one element of the address is updated
+        // it will allow us to add a rollback link in that case
+        var addressUpdated = false;
 
         // don't add city if it's not provided
         // could make bad result if it's combined with lat/long
@@ -326,6 +335,8 @@ $(document).ready(function() {
                     if (formattedAddressClean !== addressFormFields.address.val()) {
                         addressFormFields.address.val(formattedAddressClean).change();
                         addressFormFields.address.css('color', 'limegreen');
+
+                        addressUpdated = true;
                     }
                 }
 
@@ -336,19 +347,35 @@ $(document).ready(function() {
                 if (gZip !== addressFormFields.zip.val()) {
                     addressFormFields.zip.val(gZip).change();
                     addressFormFields.zip.css('color', 'limegreen');
+
+                    addressUpdated = true;
+                }
+
+                // custom update for this state
+                // @see https://www.facebook.com/notes/foursquare-french-su/r%C3%A8gles-conseils/352769948167141
+                if (gAreaLvl1 === 'Provence-Alpes-Côte d\'Azur') {
+                    gAreaLvl1 = 'PACA';
                 }
 
                 if (gAreaLvl1 !== "" && gAreaLvl1 !== addressFormFields.state.val()) {
                     addressFormFields.state.val(gAreaLvl1).change();
                     addressFormFields.state.css('color', 'limegreen');
+
+                    addressUpdated = true;
                 }
 
                 if (gLocality !== addressFormFields.city.val()) {
                     addressFormFields.city.val(gLocality).change();
                     addressFormFields.city.css('color', 'limegreen');
+
+                    addressUpdated = true;
                 }
 
                 loadingImg.hide();
+
+                if (true === addressUpdated) {
+                    bindAddressRollBack(addressFormFields);
+                }
             },
             statusCode: {
                 0: function () {
