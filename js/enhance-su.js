@@ -137,6 +137,9 @@ $(document).ready(function() {
                 $(this).next('img'),
                 'div.editPanes div.editPane h3'
             );
+
+            // it's coming from a link, so we cancel the href '#'
+            return false;
         });
     }
 
@@ -179,6 +182,9 @@ $(document).ready(function() {
                 $(this).next('img'),
                 '#enhance-su-auto-address'
             );
+
+            // it's coming from a link, so we cancel the href '#'
+            return false;
         });
     }
 
@@ -195,28 +201,66 @@ $(document).ready(function() {
 
         $('<span> - </span><a href="#" id="enhance-su-auto-address-rollback">rollback change</a>').insertAfter('#enhance-su-auto-address a');
 
-        $('#enhance-su-auto-address-rollback').bind('click', {addressFormFields: addressFields}, function(event) {
-            // clean message since we rollback
-            $('.enhance-su-message-error').remove();
-            $('.enhance-su-message-warning').remove();
+        // handle cancel button click (and closing button - on the top right)
+        // Foursquare will already re-apply old values, we just need to remove rollback link
+        // and re-apply default color
+        $('div.buttons span.cancelEditButton, div.editPane span.xButton').bind(
+            'click',
+            {addressFormFields: addressFields},
+            function(event) {
+                $('.enhance-su-message-error').remove();
+                $('.enhance-su-message-warning').remove();
 
-            event.data.addressFormFields.address.val(oldAddressValues.address);
-            event.data.addressFormFields.address.css('color', '#4d4d4d');
+                event.data.addressFormFields.address.css('color', '#4d4d4d');
+                event.data.addressFormFields.zip.css('color', '#4d4d4d');
+                event.data.addressFormFields.state.css('color', '#4d4d4d');
+                event.data.addressFormFields.city.css('color', '#4d4d4d');
 
-            event.data.addressFormFields.zip.val(oldAddressValues.zip);
-            event.data.addressFormFields.zip.css('color', '#4d4d4d');
+                var rollbackBlock = $('#enhance-su-auto-address-rollback');
+                rollbackBlock.prev('span').remove();
+                rollbackBlock.remove();
 
-            event.data.addressFormFields.state.val(oldAddressValues.state);
-            event.data.addressFormFields.state.css('color', '#4d4d4d');
+                oldAddressValues = {};
+            }
+        );
 
-            event.data.addressFormFields.city.val(oldAddressValues.city);
-            event.data.addressFormFields.city.css('color', '#4d4d4d');
+        $('#enhance-su-auto-address-rollback').bind(
+            'click',
+            {addressFormFields: addressFields},
+            function(event) {
+                doAddressRollback(this, event.data.addressFormFields);
 
-            // rollback is done, remove link and reset old values
-            $(this).prev('span').remove();
-            $(this).remove();
-            oldAddressValues = {};
-        });
+                // it's coming from a link, so we cancel the href '#'
+                return false;
+            }
+        );
+    }
+
+    /**
+     * It actually DO the rollback only
+     *
+     */
+    function doAddressRollback (element, addressFields) {
+        // clean message since we rollback
+        $('.enhance-su-message-error').remove();
+        $('.enhance-su-message-warning').remove();
+
+        addressFields.address.val(oldAddressValues.address);
+        addressFields.address.css('color', '#4d4d4d');
+
+        addressFields.zip.val(oldAddressValues.zip);
+        addressFields.zip.css('color', '#4d4d4d');
+
+        addressFields.state.val(oldAddressValues.state);
+        addressFields.state.css('color', '#4d4d4d');
+
+        addressFields.city.val(oldAddressValues.city);
+        addressFields.city.css('color', '#4d4d4d');
+
+        // rollback is done, remove link and reset old values
+        $(element).prev('span').remove();
+        $(element).remove();
+        oldAddressValues = {};
     }
 
     /**
