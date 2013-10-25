@@ -62,6 +62,31 @@ $(document).ready(function() {
     }
 
     /**
+     * Add search links to Google & Google Maps in the "suggest edit" panel
+     */
+    function enhanceSearchSuggestEdit () {
+        // avoid duplicate enhancement
+        if ($('#enhance-su-auto-address').html()) {
+            return;
+        }
+
+        $('<div class="suggest-edit" id="enhance-su-auto-address"></div>').insertAfter('input.formStyle.venueNameInput.flagEditInput');
+
+        // add Google link
+        var hrefGoogle = 'https://www.google.com/search?q='+
+            encodeURIComponent($('input.formStyle.venueNameInput.flagEditInput').val())+' '+
+            encodeURIComponent($('input.formStyle.flagEditInput.city').val());
+
+        $('#enhance-su-auto-address').append('Search on: <a target="_blank" href="'+hrefGoogle+'">Google</a>');
+
+        // add Google Maps link
+        var hrefMaps = 'https://maps.google.com/maps?q='+
+            encodeURIComponent($('div.accordianHeader.expandable div.headerVenueText').html());
+
+        $('#enhance-su-auto-address').append(' - <a target="_blank" href="'+hrefMaps+'">Google Maps</a>');
+    }
+
+    /**
      * Display empty values from edit panel
      * to be display right now, instead of wasting one click
      *
@@ -99,13 +124,13 @@ $(document).ready(function() {
     }
 
     /**
-     * Display a link beside the "Edit this location" in edition panel
+     * Display a link below the "Edit this location" in edition panel
      * to automatically update address fields (address, state, zip & city) using Google Maps
      * It's displayed only when we have an address in the form.
      */
     function displayFixAddress () {
         // if edit panel doesn't exists or enhancement already exists
-        if (!$('div.editPanes div.editPane').html() || $('#enhance-su-auto-address').html()) {
+        if (!$('div.editPanes div.editPane').html() || $('#enhance-su-auto-address a.fix-address').html()) {
             return;
         }
 
@@ -119,10 +144,10 @@ $(document).ready(function() {
             return;
         }
 
-        $('div.editPanes div.editPane h3').append('<div id="enhance-su-auto-address"><a href="#">Fix address</a> <img style="display: none" src="//i.imgur.com/Srmlo6N.gif" /></div>');
+        $('div.editPanes div.editPane h3').append('<div id="enhance-su-auto-address"><a class="fix-address" href="#">Fix address</a> <img style="display: none" src="//i.imgur.com/Srmlo6N.gif" /></div>');
 
         // bind link
-        $('#enhance-su-auto-address a').bind('click', function() {
+        $('#enhance-su-auto-address a.fix-address').bind('click', function() {
             var addressFields = {
                 address: address,
                 state: $('li.field.simpleField[data-key="state"] input'),
@@ -143,9 +168,14 @@ $(document).ready(function() {
         });
     }
 
+    /**
+     * Display a link below the big input for the venue name in the "suggest edit" panel
+     * to automatically update address fields (address, state, zip & city) using Google Maps
+     * It can use latitude/longitude if no address are defined
+     */
     function displayFixAddressSuggestEdit () {
-        // if edit panel doesn't exists or enhancement already exists
-        if (!$('div.modalLoadingContainer div.inputArea').html() || $('#enhance-su-auto-address').html()) {
+        // if edit panel doesn't exists or enhancement link already exists
+        if (!$('div.modalLoadingContainer div.inputArea').html() || $('#enhance-su-auto-address a.fix-address').html()) {
             return;
         }
 
@@ -156,10 +186,10 @@ $(document).ready(function() {
             return;
         }
 
-        $('<div class="suggest-edit" id="enhance-su-auto-address"><a href="#">Fix address</a> <img style="display: none" src="//i.imgur.com/Srmlo6N.gif" /></div>').insertAfter('input.formStyle.venueNameInput.flagEditInput');
+        $('#enhance-su-auto-address').append('<br/>Or <a class="fix-address" href="#">fix the address</a> <img style="display: none" src="//i.imgur.com/Srmlo6N.gif" />');
 
         // bind link
-        $('#enhance-su-auto-address a').bind('click', function() {
+        $('#enhance-su-auto-address a.fix-address').bind('click', function() {
             var addressFields = {
                 address: address,
                 state: $('input.formStyle.flagEditInput.state'),
@@ -199,7 +229,7 @@ $(document).ready(function() {
             return;
         }
 
-        $('<span> - </span><a href="#" id="enhance-su-auto-address-rollback">rollback change</a>').insertAfter('#enhance-su-auto-address a');
+        $('<span> - </span><a href="#" id="enhance-su-auto-address-rollback">rollback change</a>').insertAfter('#enhance-su-auto-address a.fix-address');
 
         // handle cancel button click (and closing button - on the top right)
         // Foursquare will already re-apply old values, we just need to remove rollback link
@@ -238,7 +268,6 @@ $(document).ready(function() {
 
     /**
      * It actually DO the rollback only
-     *
      */
     function doAddressRollback (element, addressFields) {
         // clean message since we rollback
@@ -448,6 +477,7 @@ $(document).ready(function() {
         enhanceSearch();
         displayEmptyValue();
         displayFixAddress();
+        enhanceSearchSuggestEdit();
         displayFixAddressSuggestEdit();
     }, 500);
 });
