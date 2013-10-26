@@ -1,6 +1,7 @@
-$(document).ready(function() {
+(function () {
     "use strict";
     var gmapsApi = '//maps.googleapis.com/maps/api/geocode/json';
+    var foursquareVenuesApi = '';
     var oldAddressValues = {};
 
     /**
@@ -17,6 +18,15 @@ $(document).ready(function() {
         // avoid duplicate enhancement
         if ($('#enhance-su-block').html()) {
             return;
+        }
+
+        // build foursquare api url
+        if (window.fourSq && window.fourSq.config.api) {
+            foursquareVenuesApi = window.fourSq.config.api.API_BASE +
+                'v2/venues/{VENUE_ID}?v=' +
+                window.fourSq.config.api.CLIENT_VERSION +
+                '&oauth_token=' +
+                window.fourSq.config.api.API_TOKEN;
         }
 
         $('#overlayHeader div.venueInfo.hasRedMarker').prepend('<p id="enhance-su-block"></p>');
@@ -129,8 +139,10 @@ $(document).ready(function() {
      * It's displayed only when we have an address in the form.
      */
     function displayFixAddress () {
+        var editPane = $('div.editPanes div.editPane');
+
         // if edit panel doesn't exists or enhancement already exists
-        if (!$('div.editPanes div.editPane').html() || $('#enhance-su-auto-address a.fix-address').html()) {
+        if (!editPane.html() || $('#enhance-su-auto-address a.fix-address').html()) {
             return;
         }
 
@@ -138,29 +150,58 @@ $(document).ready(function() {
         // is empty after the first enhancement
         oldAddressValues = {};
 
-        // if there is no address, we won't try to improve it automatically
-        var address = $('li.field.simpleField[data-key="address"] input');
-        if ($('div.editPanes div.editPane').html() && (address && '' === address.val())) {
-            return;
-        }
-
         $('div.editPanes div.editPane h3').append('<div id="enhance-su-auto-address"><a class="fix-address" href="#">Fix address</a> <img style="display: none" src="//i.imgur.com/Srmlo6N.gif" /></div>');
 
-        // bind link
+        var addressFields = {
+            address: $('li.field.simpleField[data-key="address"] input'),
+            state: $('li.field.simpleField[data-key="state"] input'),
+            zip: $('li.field.simpleField[data-key="zip"] input'),
+            city: $('li.field.simpleField[data-key="city"] input')
+        };
+
+        // if there is no address, we request the foursquare api to get lat/long values
+        if (editPane.html() && (addressFields.address && '' === addressFields.address.val())) {
+            $.ajax({
+                type: "GET",
+                url: foursquareVenuesApi.replace('{VENUE_ID}', editPane.data('venueid')),
+                dataType: "json",
+                success: function (data, textStatus, jqXHR) {
+                    if (data.meta.code !== 200) {
+                        return;
+                    }
+
+                    doBindFixAddress(addressFields, 'div.editPanes div.editPane h3', data.response.venue.location.lat+','+data.response.venue.location.lng);
+                }
+            });
+        } else {
+            doBindFixAddress(addressFields, 'div.editPanes div.editPane h3', '');
+        }
+    }
+
+    /**
+     * Bind the link to fix address in /edit
+     *
+     * @param  object   addressFields
+     * @param  string   insertMessageAfter  @see setAddressFromGoogle
+     * @param  string   latlong             If defined, it will be used instead of address/city
+     */
+    function doBindFixAddress (addressFields, insertMessageAfter, latlong) {
         $('#enhance-su-auto-address a.fix-address').bind('click', function() {
-            var addressFields = {
-                address: address,
-                state: $('li.field.simpleField[data-key="state"] input'),
-                zip: $('li.field.simpleField[data-key="zip"] input'),
-                city: $('li.field.simpleField[data-key="city"] input')
-            };
+            // use lat & long if it is given
+            var addressSearchQuery = addressFields.address.val();
+            var city = addressFields.city.val();
+
+            if (latlong !== '') {
+                addressSearchQuery = latlong;
+                city = '';
+            }
 
             setAddressFromGoogle(
-                address.val(),
-                addressFields.city.val(),
+                addressSearchQuery,
+                city,
                 addressFields,
                 $(this).next('img'),
-                'div.editPanes div.editPane h3'
+                insertMessageAfter
             );
 
             // it's coming from a link, so we cancel the href '#'
@@ -180,42 +221,28 @@ $(document).ready(function() {
         }
 
         // if there is no address, we won't try to improve it automatically
-        var address = $('input.formStyle.flagEditInput.address');
-        var latlong = $('input.formStyle.flagEditInput.ll');
-        if (address && '' === address.val() && latlong && '' === latlong.val()) {
+        var address = $('input.formStyle.flagEditInput.address').val();
+        var latlong = $('input.formStyle.flagEditInput.ll').val();
+        if ('' === address && '' === latlong) {
             return;
         }
 
         $('#enhance-su-auto-address').append('<br/>Or <a class="fix-address" href="#">fix the address</a> <img style="display: none" src="//i.imgur.com/Srmlo6N.gif" />');
 
+        var addressFields = {
+            address: $('input.formStyle.flagEditInput.address'),
+            state: $('input.formStyle.flagEditInput.state'),
+            zip: $('input.formStyle.flagEditInput.zip'),
+            city: $('input.formStyle.flagEditInput.city')
+        };
+
+        // address exists? Do not use lat/lng to fix the address
+        if ('' !== address) {
+            latlong = '';
+        }
+
         // bind link
-        $('#enhance-su-auto-address a.fix-address').bind('click', function() {
-            var addressFields = {
-                address: address,
-                state: $('input.formStyle.flagEditInput.state'),
-                zip: $('input.formStyle.flagEditInput.zip'),
-                city: $('input.formStyle.flagEditInput.city')
-            };
-
-            // use lat & long if we don't have an address
-            var addressSearchQuery = address.val();
-            var city = addressFields.city.val();
-            if ('' === addressSearchQuery) {
-                addressSearchQuery = latlong.val();
-                city = '';
-            }
-
-            setAddressFromGoogle(
-                addressSearchQuery,
-                city,
-                addressFields,
-                $(this).next('img'),
-                '#enhance-su-auto-address'
-            );
-
-            // it's coming from a link, so we cancel the href '#'
-            return false;
-        });
+        doBindFixAddress(addressFields, '#enhance-su-auto-address', latlong);
     }
 
     /**
@@ -355,7 +382,7 @@ $(document).ready(function() {
                 }
 
                 if (data.results.length > 1) {
-                    $(insertMessageAfter).append('<span class="enhance-su-message-warning">The result may be inaccurate, please check the data and correct if necessary.</span>');
+                    $(insertMessageAfter).append('<span class="enhance-su-message-warning">The result may be inaccurate, please check the data.</span>');
                 }
 
                 for (var i = 0; i < data.results[0].address_components.length; i++) {
@@ -480,4 +507,4 @@ $(document).ready(function() {
         enhanceSearchSuggestEdit();
         displayFixAddressSuggestEdit();
     }, 500);
-});
+})();
