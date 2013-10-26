@@ -1,24 +1,31 @@
 {
-  "name": "Enhance Foursquare SU",
-  "version": "0.2",
-  "description": "Add some enhancement to the Foursquare SU part",
-  "manifest_version": 2,
-  "permissions": [ "http://maps.googleapis.com/" ],
-  "icons": {
-    "16": "img/icon16.png",
-    "48": "img/icon48.png",
-    "128": "img/icon128.png"
-  },
-  "web_accessible_resources": ["js/vendor/jquery-2.0.3.min.js", "js/vendor/jquery-2.0.3.min.map"],
-  "content_scripts": [{
-    "matches": [
-      "*://foursquare.com/edit/*",
-      "*://*.foursquare.com/edit/*",
-      "*://*.foursquare.com/v/*",
-      "*://foursquare.com/v/*"
+    "name": "Enhance Foursquare SU",
+    "version": "0.2",
+    "description": "Add some enhancement to the Foursquare SU part",
+    "homepage_url": "https://github.com/j0k3r/EnhanceFoursquareSU",
+    "manifest_version": 2,
+    "permissions": ["http://maps.googleapis.com/"],
+    "icons": {
+        "16": "img/icon16.png",
+        "48": "img/icon48.png",
+        "128": "img/icon128.png"
+    },
+    "web_accessible_resources": [
+        "js/vendor/jquery-2.0.3.min.js",
+        "js/vendor/jquery-2.0.3.min.map"
     ],
-    "run_at": "document_end",
-    "css": ["css/enhance-su.css"],
-    "js": ["js/vendor/jquery-2.0.3.min.js", "js/enhance-su.js"]
-  }]
+    "content_scripts": [{
+        "matches": [
+            "*://foursquare.com/edit/*",
+            "*://*.foursquare.com/edit/*",
+            "*://*.foursquare.com/v/*",
+            "*://foursquare.com/v/*"
+        ],
+        "run_at": "document_end",
+        "css": ["css/enhance-su.css"],
+        "js": [
+            "js/vendor/jquery-2.0.3.min.js",
+            "js/enhance-su.js"
+        ]
+    }]
 }
