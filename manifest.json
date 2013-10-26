@@ -12,7 +12,8 @@
     },
     "web_accessible_resources": [
         "js/vendor/jquery-2.0.3.min.js",
-        "js/vendor/jquery-2.0.3.min.map"
+        "js/vendor/jquery-2.0.3.min.map",
+        "js/enhance-su.js"
     ],
     "content_scripts": [{
         "matches": [
@@ -25,7 +26,7 @@
         "css": ["css/enhance-su.css"],
         "js": [
             "js/vendor/jquery-2.0.3.min.js",
-            "js/enhance-su.js"
+            "js/contentscript.js"
         ]
     }]
 }
