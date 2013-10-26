@@ -394,7 +394,7 @@ $(document).ready(function() {
                     }
                 }
 
-                if (gRoute !== "") {
+                if ('' !== gRoute) {
                     var formattedAddress = data.results[0].formatted_address;
                     var formattedAddressClean = gRoute.trim();
                     if (gStreeNumber !== "") {
@@ -417,7 +417,7 @@ $(document).ready(function() {
                     gLocality = gPostalTown;
                 }
 
-                if (gZip !== addressFormFields.zip.val()) {
+                if ('' !== gZip && gZip !== addressFormFields.zip.val()) {
                     addressFormFields.zip.val(gZip).change();
                     addressFormFields.zip.css('color', 'limegreen');
 
@@ -430,14 +430,14 @@ $(document).ready(function() {
                     gAreaLvl1 = 'PACA';
                 }
 
-                if (gAreaLvl1 !== "" && gAreaLvl1 !== addressFormFields.state.val()) {
+                if ('' !== gAreaLvl1 && gAreaLvl1 !== addressFormFields.state.val()) {
                     addressFormFields.state.val(gAreaLvl1).change();
                     addressFormFields.state.css('color', 'limegreen');
 
                     addressUpdated = true;
                 }
 
-                if (gLocality !== addressFormFields.city.val()) {
+                if ('' !== gLocality && gLocality !== addressFormFields.city.val()) {
                     addressFormFields.city.val(gLocality).change();
                     addressFormFields.city.css('color', 'limegreen');
 
