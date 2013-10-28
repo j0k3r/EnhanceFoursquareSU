@@ -1,26 +1,23 @@
 (function () {
     "use strict";
     var gmapsApi = '//maps.googleapis.com/maps/api/geocode/json';
-    var foursquareVenuesApi = '';
     var oldAddressValues = {};
-    var foursquareNotifier;
+
+    var _foursquareNotifier;
+    var _foursquareApiVenue;
 
     /**
      * Some initilizations at first
      */
     function initialize () {
-        // build foursquare api url
-        if ('' === foursquareVenuesApi && window.fourSq.config.api) {
-            foursquareVenuesApi = window.fourSq.config.api.API_BASE +
-                'v2/venues/{VENUE_ID}?v=' +
-                window.fourSq.config.api.CLIENT_VERSION +
-                '&oauth_token=' +
-                window.fourSq.config.api.API_TOKEN;
+        // initialize the Foursquare notifier
+        if (typeof _foursquareNotifier === "undefined") {
+            _foursquareNotifier = fourSq.ui.Notifier.getInstance();
         }
 
-        // initialize the Foursquare notifier
-        if (typeof foursquareNotifier === "undefined") {
-            foursquareNotifier = fourSq.ui.Notifier.getInstance();
+        // initialize the Foursquare Venue API
+        if (typeof _foursquareApiVenue === "undefined") {
+            _foursquareApiVenue = fourSq.api.services.Venue;
         }
     }
 
@@ -172,18 +169,16 @@
 
         // if there is no address, we request the foursquare api to get lat/long values
         if (editPane.html() && (addressFields.address && '' === addressFields.address.val())) {
-            $.ajax({
-                type: "GET",
-                url: foursquareVenuesApi.replace('{VENUE_ID}', editPane.data('venueid')),
-                dataType: "json",
-                success: function (data, textStatus, jqXHR) {
-                    if (data.meta.code !== 200) {
-                        return;
-                    }
-
-                    doBindFixAddress(addressFields, 'div.editPanes div.editPane h3', data.response.venue.location.lat+','+data.response.venue.location.lng);
+            _foursquareApiVenue.detail(
+                editPane.data('venueid'),
+                function (venue) {
+                    doBindFixAddress(
+                        addressFields,
+                        'div.editPanes div.editPane h3',
+                        venue.location.lat+','+venue.location.lng
+                    );
                 }
-            });
+            );
         } else {
             doBindFixAddress(addressFields, 'div.editPanes div.editPane h3', '');
         }
@@ -488,9 +483,9 @@
                         $(insertMessageAfter).append('<span class="enhance-su-message-warning">The result may be inaccurate, please check the data.</span>');
                     }
 
-                    foursquareNotifier.info('Address updated !');
+                    _foursquareNotifier.info('Address updated !');
                 } else {
-                    foursquareNotifier.info('Nothing to update');
+                    _foursquareNotifier.info('Nothing to update');
                 }
             },
             statusCode: {
