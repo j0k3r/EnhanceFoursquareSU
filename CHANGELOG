@@ -1,0 +1,18 @@
+# Enhance Foursquare SU - Changelog
+
+## v0.3 (...)
+
+ - Use Foursquare notifier (to notify uh!)
+
+## v0.2 (26/10/13)
+
+ - Ability to fix an address using Google Maps (in /edit & suggest edit)
+ - Add rollback link to a previous "fixed" address
+ - If an address is empty, request Foursquare API to retrieve lat/long value (in /edit)
+ - Use a different way to inject script into the website
+
+## v0.1 (~ 13/10/13)
+
+ - Replace Bing link to Google
+ - Add a Google Maps links (in /edit)
+ - Display empty values (in /edit)

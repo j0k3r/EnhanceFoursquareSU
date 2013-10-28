@@ -3,6 +3,26 @@
     var gmapsApi = '//maps.googleapis.com/maps/api/geocode/json';
     var foursquareVenuesApi = '';
     var oldAddressValues = {};
+    var foursquareNotifier;
+
+    /**
+     * Some initilizations at first
+     */
+    function initialize () {
+        // build foursquare api url
+        if ('' === foursquareVenuesApi && window.fourSq.config.api) {
+            foursquareVenuesApi = window.fourSq.config.api.API_BASE +
+                'v2/venues/{VENUE_ID}?v=' +
+                window.fourSq.config.api.CLIENT_VERSION +
+                '&oauth_token=' +
+                window.fourSq.config.api.API_TOKEN;
+        }
+
+        // initialize the Foursquare notifier
+        if (typeof foursquareNotifier === "undefined") {
+            foursquareNotifier = fourSq.ui.Notifier.getInstance();
+        }
+    }
 
     /**
      * Set first letter to lower case.
@@ -18,15 +38,6 @@
         // avoid duplicate enhancement
         if ($('#enhance-su-block').html()) {
             return;
-        }
-
-        // build foursquare api url
-        if (window.fourSq && window.fourSq.config.api) {
-            foursquareVenuesApi = window.fourSq.config.api.API_BASE +
-                'v2/venues/{VENUE_ID}?v=' +
-                window.fourSq.config.api.CLIENT_VERSION +
-                '&oauth_token=' +
-                window.fourSq.config.api.API_TOKEN;
         }
 
         $('#overlayHeader div.venueInfo.hasRedMarker').prepend('<p id="enhance-su-block"></p>');
@@ -381,10 +392,6 @@
                     return;
                 }
 
-                if (data.results.length > 1) {
-                    $(insertMessageAfter).append('<span class="enhance-su-message-warning">The result may be inaccurate, please check the data.</span>');
-                }
-
                 for (var i = 0; i < data.results[0].address_components.length; i++) {
                     var addressComponent = data.results[0].address_components[i];
                     if (addressComponent.types.indexOf("route") > -1) {
@@ -475,6 +482,15 @@
 
                 if (true === addressUpdated) {
                     bindAddressRollBack(addressFormFields);
+
+                    // do notify about many results only in case that address has beed updated
+                    if (data.results.length > 1) {
+                        $(insertMessageAfter).append('<span class="enhance-su-message-warning">The result may be inaccurate, please check the data.</span>');
+                    }
+
+                    foursquareNotifier.info('Address updated !');
+                } else {
+                    foursquareNotifier.info('Nothing to update');
                 }
             },
             statusCode: {
@@ -507,4 +523,6 @@
         enhanceSearchSuggestEdit();
         displayFixAddressSuggestEdit();
     }, 500);
+
+    initialize();
 })();
