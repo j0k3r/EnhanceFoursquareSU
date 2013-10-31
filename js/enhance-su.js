@@ -423,7 +423,14 @@
                     }
                 }
 
-                if ('' !== gRoute) {
+                /**
+                 * For each input, we check
+                 *  - if the value from Google is ok
+                 *  - that the input field is present (can be suggest edit on one field)
+                 *  - that the new value isn't the same as the old one
+                 */
+
+                if ('' !== gRoute && addressFormFields.address.length) {
                     var formattedAddress = data.results[0].formatted_address;
                     var formattedAddressClean = gRoute.trim();
                     if (gStreeNumber !== "") {
@@ -442,11 +449,7 @@
                     }
                 }
 
-                if (gPostalTown !== "") {
-                    gLocality = gPostalTown;
-                }
-
-                if ('' !== gZip && gZip !== addressFormFields.zip.val()) {
+                if ('' !== gZip && addressFormFields.zip.length && gZip !== addressFormFields.zip.val()) {
                     addressFormFields.zip.val(gZip).change();
                     addressFormFields.zip.css('color', 'limegreen');
 
@@ -459,14 +462,18 @@
                     gAreaLvl1 = 'PACA';
                 }
 
-                if ('' !== gAreaLvl1 && gAreaLvl1 !== addressFormFields.state.val()) {
+                if ('' !== gAreaLvl1 && addressFormFields.state.length && gAreaLvl1 !== addressFormFields.state.val()) {
                     addressFormFields.state.val(gAreaLvl1).change();
                     addressFormFields.state.css('color', 'limegreen');
 
                     addressUpdated = true;
                 }
 
-                if ('' !== gLocality && gLocality !== addressFormFields.city.val()) {
+                if (gPostalTown !== "") {
+                    gLocality = gPostalTown;
+                }
+
+                if ('' !== gLocality && addressFormFields.city.length && gLocality !== addressFormFields.city.val()) {
                     addressFormFields.city.val(gLocality).change();
                     addressFormFields.city.css('color', 'limegreen');
 
