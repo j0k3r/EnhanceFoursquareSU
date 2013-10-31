@@ -3,8 +3,22 @@
     var gmapsApi = '//maps.googleapis.com/maps/api/geocode/json';
     var oldAddressValues = {};
 
+    // full list: home_remove|home_recategorize|home_claim|not_closed|un_delete|public|private|undelete|doesnt_exist|event_over|inappropriate|duplicate|closed|mislocated
+    var flagReasons = {
+        mislocated: 'mislocated',
+        closed: 'closed',
+        inappropriate: 'offensive or inappropriate',
+        doesnt_exist: "doesn't exist",
+        event_over: 'an event that has ended',
+        home_recategorize: 'a home',
+    };
+
+    // global Foursquare Object
     var _foursquareNotifier;
     var _foursquareApiVenue;
+    var _foursquareStorage;
+
+    var flagInfos = { comment: 'Marked via Enhance Foursquare SU' };
 
     /**
      * Some initilizations at first
@@ -18,6 +32,11 @@
         // initialize the Foursquare Venue API
         if (typeof _foursquareApiVenue === "undefined") {
             _foursquareApiVenue = fourSq.api.services.Venue;
+        }
+
+        // initialize the Foursquare local storage
+        if (typeof _foursquareStorage === "undefined") {
+            _foursquareStorage = fourSq.util.localStorage;
         }
     }
 
@@ -139,6 +158,73 @@
         }
 
         $('#enhance-su-block').append(text);
+    }
+
+    /**
+     * Add a dropdown select above the venue to quickly flag it.
+     * It store the action in the localStorage, to avoid multiple report.
+     *
+     * @todo : remove flag from localStorage
+     */
+    function displayFlagOptions () {
+        var editPane = $('div.editPanes div.editPane');
+
+        // if edit panel doesn't exists or enhancement already exists
+        if (!editPane.html() || $('#enhance-su-flag-options').html()) {
+            return;
+        }
+
+        // check if current venue has already been flagged
+        var storageKey = 'EFS-flag-'+editPane.data('venueid');
+        if (true === _foursquareStorage.exists(storageKey)) {
+            // @todo: check if the flag is gone
+
+            $('#enhance-su-block').append('<span id="enhance-su-flag-options"><strong>Already flagged as: '+flagReasons[_foursquareStorage.get(storageKey)]+'</strong></span>');
+
+            return;
+        }
+
+        // build dropdown options
+        var select = '<select><option>(none)</option>';
+        $.each(flagReasons, function(key, value) {
+            select += '<option value="'+key+'">'+value+'</option>';
+        });
+        select += '</select>';
+
+        $('#enhance-su-block').append('<span id="enhance-su-flag-options">Flag as: '+select+'</span>');
+
+        $('#enhance-su-flag-options select').change(function() {
+            var problem = $(this).val();
+
+            if ('' === problem) {
+                return;
+            }
+
+            if (false === confirm('Do you want to flag this venue with problem: "'+problem+'"')) {
+                // re-select the "(none)" option
+                $(this).children('option').first().prop('selected', true);
+                return;
+            }
+
+            flagInfos.problem = problem;
+
+            // do flag venue
+            _foursquareApiVenue.flag(
+                editPane.data('venueid'),
+                flagInfos,
+                function (response, dataSuccess) {
+                    // store new flag for this venue
+                    _foursquareStorage.set(storageKey, problem);
+
+                    _foursquareNotifier.info('Venue reported as "'+flagReasons[problem]+'".');
+
+                    $(this).parent().html('Flagged as: <strong>'+flagReasons[problem]+'</strong> !');
+                },
+                function (response, dataError) {
+                    _foursquareNotifier.error('Error: '+response.response.meta.errorDetail);
+                }
+            );
+        });
     }
 
     /**
@@ -521,6 +607,7 @@
         initializeEnhanceBlock();
         enhanceSearch();
         displayEmptyValue();
+        displayFlagOptions();
         displayFixAddress();
         enhanceSearchSuggestEdit();
         displayFixAddressSuggestEdit();

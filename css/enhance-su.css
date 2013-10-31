@@ -31,3 +31,10 @@ div.accordian div.suggest-edit#enhance-su-auto-address {
     color: orange;
     display: block;
 }
+
+#enhance-su-flag-options select {
+    overflow: hidden;
+    border: 1px solid #ccc;
+    background: transparent;
+    color: #999999;
+}
