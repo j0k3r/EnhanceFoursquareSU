@@ -614,4 +614,109 @@
     }, 500);
 
     initialize();
+
+    /**
+     * Check that we are on the dashboard
+     * If so we add a user stats for all proposed suggestions / approved
+     */
+    if ('/edit/' === window.location.pathname) {
+        fourSq.api.services.User.flagStats(
+            window.fourSq.config.user.USER_PROFILE.id,
+            function (response, dataSuccess) {
+                var processed = 0;
+                var proposed = 0;
+                var processedApproved = 0;
+                var proposedApproved = 0;
+
+                for (var i = response.stats.length - 1; i >= 0; i--) {
+                    processed += response.stats[i].processed;
+                    proposed += response.stats[i].proposed;
+                    processedApproved += response.stats[i].processedApproved;
+                    proposedApproved += response.stats[i].proposedApproved;
+                }
+
+                $('<div class="queueWrapper" id="enhance-su-stats"><h3>Your Stats</h3><ul class="queueLinks"></ul></div><br/><br/>').insertBefore('#su-tools-dash div.wideColumn div.queueWrapper');
+
+                var allStatsList = $('#enhance-su-stats ul.queueLinks');
+
+                var tpl = ''+
+                '<li class="queueLinkItem">'+
+                    '<a href="#" class="queueLink">'+
+                        '<h3>%title%</h3>'+
+                        '<div class="userInfo">'+
+                            '<span class="userStats">'+
+                                '<span class="approvedCount">%approvedCount%</span> / <span class="suggestedCount">%suggestedCount%</span>'+
+                            '</span>'+
+                            '<span class="pendingIndicator">'+
+                                '<span class="pendingCount">%percentage%%</span>'+
+                            '</span>'+
+                        '</div>'+
+                    '</a>'+
+                '</li>';
+
+                // append overall stats
+                var percentage = proposedApproved/proposed*100;
+                if (isNaN(percentage)) {
+                    percentage = 0;
+                }
+
+                var statTpl = tpl
+                    .replace('%title%', 'Overall stats', 'mi')
+                    .replace('%approvedCount%', proposedApproved, 'mi')
+                    .replace('%suggestedCount%', proposed, 'mi')
+                    .replace('%percentage%', parseFloat(percentage).toFixed(2), 'mi');
+
+                allStatsList.append(statTpl);
+
+                var statsTitle = {
+                    'attribute': 'Business details',
+                    'tip': 'Flagged tips',
+                    'category': 'Category suggestions',
+                    'remove': 'Removal suggestions',
+                    'info': 'Address suggestions',
+                    'uncategorized': 'Suggest categories',
+                    'duplicate': 'Merge suggestions',
+                    'private': 'Places as private'
+                };
+
+                /**
+                 * loop thru all stats, replace values from the tpl and append the line
+                 *
+                 * {
+                 *    "proposed": 200,
+                 *    "proposedApproved": 148,
+                 *    "proposedPending": 0,
+                 *    "processed": 23,
+                 *    "processedApproved": 21,
+                 *    "processedPending": 1,
+                 *    "type": "private"
+                 *  }
+                 */
+                for (var j = response.stats.length - 1; j >= 0; j--) {
+                    var curentStat = response.stats[j];
+
+                    if (!statsTitle[curentStat.type]) {
+                        continue;
+                    }
+
+                    // calculate the percentage between suggested & approuved
+                    percentage = curentStat.proposedApproved/curentStat.proposed*100;
+                    if (isNaN(percentage)) {
+                        percentage = 0;
+                    }
+
+                    statTpl = tpl
+                        .replace('%title%', statsTitle[curentStat.type], 'mi')
+                        .replace('%approvedCount%', curentStat.proposedApproved, 'mi')
+                        .replace('%suggestedCount%', curentStat.proposed, 'mi')
+                        .replace('%percentage%', parseFloat(percentage).toFixed(2), 'mi');
+
+                    allStatsList.append(statTpl);
+                }
+            },
+            function (response, dataError) {
+                _foursquareNotifier.error('Error: '+response.response.meta.errorDetail);
+            }
+        );
+    }
 })();

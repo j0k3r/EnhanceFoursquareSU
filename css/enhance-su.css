@@ -38,3 +38,7 @@ div.accordian div.suggest-edit#enhance-su-auto-address {
     background: transparent;
     color: #999999;
 }
+
+div#enhance-su-stats.queueWrapper ul li .userInfo .userStats {
+    display: inline !important;
+}
