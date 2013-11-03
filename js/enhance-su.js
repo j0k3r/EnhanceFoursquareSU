@@ -1,7 +1,9 @@
 (function () {
     "use strict";
     var gmapsApi = '//maps.googleapis.com/maps/api/geocode/json';
+    var jsonCompanies = '//rawgithub.com/j0k3r/EnhanceFoursquareSU/master/companies.json';
     var oldAddressValues = {};
+    var companies = [];
 
     // full list: home_remove|home_recategorize|home_claim|not_closed|un_delete|public|private|undelete|doesnt_exist|event_over|inappropriate|duplicate|closed|mislocated
     var flagReasons = {
@@ -38,6 +40,11 @@
         if (typeof _foursquareStorage === "undefined") {
             _foursquareStorage = fourSq.util.localStorage;
         }
+
+        // load companies
+        $.getJSON(jsonCompanies, function(data) {
+            companies = data;
+        });
     }
 
     /**
@@ -257,10 +264,13 @@
         $('div.editPanes div.editPane h3').append('<div id="enhance-su-auto-address"><a class="fix-address" href="#">Fix address</a> <img style="display: none" src="//i.imgur.com/Srmlo6N.gif" /></div>');
 
         var addressFields = {
+            name: $('li.field.simpleField[data-key="name"] input'),
             address: $('li.field.simpleField[data-key="address"] input'),
             state: $('li.field.simpleField[data-key="state"] input'),
             zip: $('li.field.simpleField[data-key="zip"] input'),
-            city: $('li.field.simpleField[data-key="city"] input')
+            city: $('li.field.simpleField[data-key="city"] input'),
+            twitter: $('li.field.simpleField[data-key="twitter"] input'),
+            url: $('li.field.simpleField[data-key="url"] input')
         };
 
         // if there is no address, we request the foursquare api to get lat/long values
@@ -332,10 +342,13 @@
         $('#enhance-su-auto-address').append('<br/>Or <a class="fix-address" href="#">fix the address</a> <img style="display: none" src="//i.imgur.com/Srmlo6N.gif" />');
 
         var addressFields = {
+            name: $('input.formStyle.venueNameInput.flagEditInput'),
             address: $('input.formStyle.flagEditInput.address'),
             state: $('input.formStyle.flagEditInput.state'),
             zip: $('input.formStyle.flagEditInput.zip'),
-            city: $('input.formStyle.flagEditInput.city')
+            city: $('input.formStyle.flagEditInput.city'),
+            twitter: $('input.formStyle.flagEditInput.twitter'),
+            url: $('input.formStyle.flagEditInput.url')
         };
 
         // bind link
@@ -369,6 +382,8 @@
                 event.data.addressFormFields.zip.css('color', '#4d4d4d');
                 event.data.addressFormFields.state.css('color', '#4d4d4d');
                 event.data.addressFormFields.city.css('color', '#4d4d4d');
+                event.data.addressFormFields.twitter.css('color', '#4d4d4d');
+                event.data.addressFormFields.url.css('color', '#4d4d4d');
 
                 var rollbackBlock = $('#enhance-su-auto-address-rollback');
                 rollbackBlock.prev('span').remove();
@@ -410,6 +425,12 @@
         addressFields.city.val(oldAddressValues.city);
         addressFields.city.css('color', '#4d4d4d');
 
+        addressFields.twitter.val(oldAddressValues.twitter);
+        addressFields.twitter.css('color', '#4d4d4d');
+
+        addressFields.url.val(oldAddressValues.url);
+        addressFields.url.css('color', '#4d4d4d');
+
         // rollback is done, remove link and reset old values
         $(element).prev('span').remove();
         $(element).remove();
@@ -436,7 +457,9 @@
                 address: addressFormFields.address.val(),
                 state: addressFormFields.state.val(),
                 zip: addressFormFields.zip.val(),
-                city: addressFormFields.city.val()
+                city: addressFormFields.city.val(),
+                twitter: addressFormFields.twitter.val(),
+                url: addressFormFields.url.val()
             };
         }
 
@@ -570,6 +593,37 @@
                     addressFormFields.city.css('color', 'limegreen');
 
                     addressUpdated = true;
+                }
+
+                // try to update known company: twitter & url
+                var companyIndexFound = '';
+                // loop thru all the companies inside `_names`
+                for (var j = companies._names.length - 1; j >= 0; j--) {
+                    // try to find a company using regex
+                    var regex = new RegExp(companies._names[j], "gi");
+                    if (regex.exec(addressFormFields.name.val())) {
+                        // store the index that matche
+                        companyIndexFound = companies._names[j];
+                        break;
+                    }
+                }
+
+                // do we find a company ?
+                if ('' !== companyIndexFound) {
+                    var companyFound = companies[companyIndexFound];
+
+                    if (companyFound.twitter !== addressFormFields.twitter.val()) {
+                        addressFormFields.twitter.val(companyFound.twitter).change();
+                        addressFormFields.twitter.css('color', 'limegreen');
+
+                        addressUpdated = true;
+                    }
+                    if (companyFound.url !== addressFormFields.url.val()) {
+                        addressFormFields.url.val(companyFound.url).change();
+                        addressFormFields.url.css('color', 'limegreen');
+
+                        addressUpdated = true;
+                    }
                 }
 
                 loadingImg.hide();

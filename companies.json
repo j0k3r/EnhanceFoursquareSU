@@ -1,0 +1,59 @@
+{
+    "_names": [
+        "Décathlon",
+        "McDonald's",
+        "Gare SNCF",
+        "RER",
+        "Subway",
+        "Buffalo Grill",
+        "Carrefour",
+        "Monoprix",
+        "KFC",
+        "Etam",
+        "BNP Paribas"
+    ],
+    "Décathlon": {
+        "twitter": "decathlonfrance",
+        "url": "http://www.decathlon.fr"
+    },
+    "McDonald's": {
+        "twitter": "mcdonalds",
+        "url": "http://www.mcdonalds.fr"
+    },
+    "Gare SNCF": {
+        "twitter": "infos_gares",
+        "url": "http://www.gares-en-mouvement.com"
+    },
+    "RER": {
+        "twitter": "infos_gares",
+        "url": "http://www.gares-en-mouvement.com"
+    },
+    "Subway": {
+        "twitter": "SUBWAY",
+        "url": "http://www.subwayfrance.fr"
+    },
+    "Buffalo Grill": {
+        "twitter": "buffalogrill",
+        "url": "http://www.buffalo-grill.fr"
+    },
+    "Carrefour": {
+        "twitter": "carrefourfrance",
+        "url": "http://www.carrefour.fr"
+    },
+    "Monoprix": {
+        "twitter": "monoprix",
+        "url": "http://www.monoprix.fr"
+    },
+    "KFC": {
+        "twitter": "kfcfrance",
+        "url": "http://www.kfc.fr"
+    },
+    "Etam": {
+        "twitter": "etam_france",
+        "url": "http://www.etam.com"
+    },
+    "BNP Paribas": {
+        "twitter": "bnpparibas_net",
+        "url": "http://www.bnpparibas.net"
+    }
+}

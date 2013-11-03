@@ -4,7 +4,10 @@
     "description": "It makes some improvement to the Foursquare SU interface.",
     "homepage_url": "https://github.com/j0k3r/EnhanceFoursquareSU",
     "manifest_version": 2,
-    "permissions": ["http://maps.googleapis.com/"],
+    "permissions": [
+        "https://maps.googleapis.com/",
+        "https://rawgithub.com/"
+    ],
     "icons": {
         "16": "img/icon16.png",
         "48": "img/icon48.png",
