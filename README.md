@@ -1,6 +1,6 @@
 # Enhance Foursquare SU
 
-**EnhanceFoursquareSU** is a very lightweight Chrome extension that make some improvement to the Foursquare SU interface.
+**EnhanceFoursquareSU** is a very lightweight Chrome extension that makes some improvement to the Foursquare SU interface.
 
 ## Enhancement
 

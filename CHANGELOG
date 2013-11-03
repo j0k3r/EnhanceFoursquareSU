@@ -3,6 +3,9 @@
 ## v0.3 (...)
 
  - Use Foursquare notifier (to notify uh!)
+ - Add a twitter link next to the url in /edit
+ - Add some stats for the logged user on the dashboard
+ - Ability to flag a venue in /edit
 
 ## v0.2 (26/10/13)
 
