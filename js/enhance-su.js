@@ -279,11 +279,11 @@
      */
     function doBindFixAddress (addressFields, insertMessageAfter, latlong) {
         $('#enhance-su-auto-address a.fix-address').bind('click', function() {
-            // use lat & long if it is given
             var addressSearchQuery = addressFields.address.val();
             var city = addressFields.city.val();
 
-            if (latlong !== '') {
+            // use lat & long if it is given and the address field is empty
+            if ('' === addressSearchQuery && '' !== latlong) {
                 addressSearchQuery = latlong;
                 city = '';
             }
@@ -313,9 +313,9 @@
         }
 
         // if there is no address, we won't try to improve it automatically
-        var address = $('input.formStyle.flagEditInput.address').val();
-        var latlong = $('input.formStyle.flagEditInput.ll').val();
-        if ('' === address && '' === latlong) {
+        var address = $('input.formStyle.flagEditInput.address');
+        var latlong = $('input.formStyle.flagEditInput.ll');
+        if ('' === address.val() && '' === latlong.val()) {
             return;
         }
 
@@ -328,13 +328,8 @@
             city: $('input.formStyle.flagEditInput.city')
         };
 
-        // address exists? Do not use lat/lng to fix the address
-        if ('' !== address) {
-            latlong = '';
-        }
-
         // bind link
-        doBindFixAddress(addressFields, '#enhance-su-auto-address', latlong);
+        doBindFixAddress(addressFields, '#enhance-su-auto-address', latlong.val());
     }
 
     /**
