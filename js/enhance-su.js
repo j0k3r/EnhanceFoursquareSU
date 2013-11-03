@@ -228,7 +228,7 @@
 
                     _foursquareNotifier.info('Venue reported as "'+flagReasons[problem]+'".');
 
-                    $(this).parent().html('Flagged as: <strong>'+flagReasons[problem]+'</strong> !');
+                    $('#enhance-su-flag-options').html('Flagged as: <strong>'+flagReasons[problem]+'</strong> !');
                 },
                 function (response, dataError) {
                     _foursquareNotifier.error('Error: '+response.response.meta.errorDetail);
