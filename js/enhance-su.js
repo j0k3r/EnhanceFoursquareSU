@@ -449,6 +449,7 @@
             success: function (data, textStatus, jqXHR) {
                 if (data.status !== "OK") {
                     loadingImg.hide();
+                    _foursquareNotifier.info('Google did not find a matching address: '+data.status);
                     return;
                 }
 
