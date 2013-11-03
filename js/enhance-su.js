@@ -60,7 +60,7 @@
     }
 
     /**
-     * Enhance search
+     * Enhance search in /edit
      *
      * - Convert Bing.com link to Google.com (for "(search the web)")
      * - Add a link to Google Maps
@@ -96,6 +96,16 @@
         var searchMaps = '<a target="_blank" href="' + hrefMaps + '">Google Maps</a>';
 
         $('#enhance-su-block').append('<span id="enhance-su-search">Search on: ' + searchGoogle + ' - ' + searchMaps + '</span>');
+
+        // add twitter next to the venue url
+        var twitter = $('li.field.simpleField[data-key="twitter"] input').val();
+        if (typeof twitter !== "undefined" && '' !== twitter) {
+            var venueUrl = $('div.venueInfoText p.venueUrl');
+            if (!venueUrl.length) {
+                $('div.venueInfoText').append('<p class="venueUrl"></p>');
+            }
+            $('div.venueInfoText p.venueUrl').append(' - <a class="url" href="http://twitter.com/'+twitter+'" target="_blank">@'+twitter+'</a>');
+        }
     }
 
     /**
