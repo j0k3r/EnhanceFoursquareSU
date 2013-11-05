@@ -13,6 +13,8 @@
         "Norauto",
         "Flunch",
         "Simply Market",
+        "Domino",
+        "Fnac",
         "BNP Paribas"
     ],
     "Décathlon": {
@@ -70,5 +72,13 @@
     "Simply Market": {
         "twitter": "SimplyMarketFr",
         "url": "http://www.simplymarket.fr"
+    },
+    "Domino": {
+        "twitter": "dominos_pizzafr",
+        "url": "http://www.dominos.fr"
+    },
+    "Fnac": {
+        "twitter": "fnac",
+        "url": "http://www.fnac.com"
     }
 }
