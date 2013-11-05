@@ -5,8 +5,7 @@
     "homepage_url": "https://github.com/j0k3r/EnhanceFoursquareSU",
     "manifest_version": 2,
     "permissions": [
-        "https://maps.googleapis.com/",
-        "https://rawgithub.com/"
+        "*://rawgithub.com/*"
     ],
     "icons": {
         "16": "img/icon16.png",
@@ -16,20 +15,25 @@
     "web_accessible_resources": [
         "js/vendor/jquery-2.0.3.min.js",
         "js/vendor/jquery-2.0.3.min.map",
-        "js/enhance-su.js"
+        "js/enhance-su.js",
+        "js/vendor/maps.api.js"
     ],
-    "content_scripts": [{
-        "matches": [
-            "*://foursquare.com/edit/*",
-            "*://*.foursquare.com/edit/*",
-            "*://*.foursquare.com/v/*",
-            "*://foursquare.com/v/*"
-        ],
-        "run_at": "document_end",
-        "css": ["css/enhance-su.css"],
-        "js": [
-            "js/vendor/jquery-2.0.3.min.js",
-            "js/contentscript.js"
-        ]
-    }]
+    "content_scripts": [
+        {
+            "matches": [
+                "*://foursquare.com/edit/*",
+                "*://*.foursquare.com/edit/*",
+                "*://*.foursquare.com/v/*",
+                "*://foursquare.com/v/*"
+            ],
+            "css": [
+                "css/enhance-su.css"
+            ],
+            "js": [
+                "js/vendor/jquery-2.0.3.min.js",
+                "js/contentscript.js"
+            ],
+            "run_at": "document_end"
+        }
+    ]
 }
