@@ -22,6 +22,30 @@
     var flagInfos = { comment: 'Marked via Enhance Foursquare SU' };
 
     /**
+     * convert "Centre Commercial" in "C.C"
+     *
+     * @return name updated (or not)
+     */
+    String.prototype.convertCC = function () {
+        var regexCC = new RegExp('centre commercial', "i");
+        if (regexCC.exec(this)) {
+            return this.replace(/centre commercial/i, 'C.C');
+        }
+
+        return this;
+    };
+
+    /**
+     * Set first letter to lower case.
+     * Used for route name
+     *
+     * @from http://stackoverflow.com/a/1026087/569101
+     */
+    String.prototype.lowercaseFirstLetter = function() {
+        return this.charAt(0).toLowerCase() + this.slice(1);
+    };
+
+    /**
      * Some initilizations at first
      */
     function initialize () {
@@ -47,13 +71,17 @@
     }
 
     /**
-     * Set first letter to lower case.
-     * Used for route name
+     * update field and set the input to green to indicate the field has been update
      *
-     * @from http://stackoverflow.com/a/1026087/569101
+     * @param  string value Updated value
+     *
+     * @return true         To indicate the field has been updated
      */
-    function lowercaseFirstLetter(string) {
-        return string.charAt(0).toLowerCase() + string.slice(1);
+    function updateFields (element, value) {
+        element.val(value).change();
+        element.css('color', 'limegreen');
+
+        return true;
     }
 
     function initializeEnhanceBlock () {
@@ -377,6 +405,7 @@
                 $('.enhance-su-message-error').remove();
                 $('.enhance-su-message-warning').remove();
 
+                event.data.addressFormFields.name.css('color', '#4d4d4d');
                 event.data.addressFormFields.address.css('color', '#4d4d4d');
                 event.data.addressFormFields.zip.css('color', '#4d4d4d');
                 event.data.addressFormFields.state.css('color', '#4d4d4d');
@@ -411,6 +440,9 @@
         // clean message since we rollback
         $('.enhance-su-message-error').remove();
         $('.enhance-su-message-warning').remove();
+
+        addressFields.name.val(oldAddressValues.name);
+        addressFields.name.css('color', '#4d4d4d');
 
         addressFields.address.val(oldAddressValues.address);
         addressFields.address.css('color', '#4d4d4d');
@@ -453,6 +485,7 @@
         // keep old value to be able to rollback
         if (jQuery.isEmptyObject(oldAddressValues)) {
             oldAddressValues = {
+                name: addressFormFields.name.val(),
                 address: addressFormFields.address.val(),
                 state: addressFormFields.state.val(),
                 zip: addressFormFields.zip.val(),
@@ -547,38 +580,31 @@
                     var formattedAddressClean = gRoute.trim();
                     if (gStreeNumber !== "") {
                         if (formattedAddress.indexOf(gRoute) > formattedAddress.indexOf(gStreeNumber)) {
-                            formattedAddressClean = gStreeNumber + " " + lowercaseFirstLetter(formattedAddressClean);
+                            formattedAddressClean = gStreeNumber + " " + formattedAddressClean.lowercaseFirstLetter();
                         } else {
                             formattedAddressClean += " " + gStreeNumber;
                         }
                     }
 
-                    if (formattedAddressClean !== addressFormFields.address.val()) {
-                        addressFormFields.address.val(formattedAddressClean).change();
-                        addressFormFields.address.css('color', 'limegreen');
+                    formattedAddressClean = formattedAddressClean.convertCC();
 
-                        addressUpdated = true;
+                    if (formattedAddressClean !== addressFormFields.address.val()) {
+                        addressUpdated = updateFields(addressFormFields.address, formattedAddressClean);
                     }
                 }
 
                 if ('' !== gZip && addressFormFields.zip.length && gZip !== addressFormFields.zip.val()) {
-                    addressFormFields.zip.val(gZip).change();
-                    addressFormFields.zip.css('color', 'limegreen');
-
-                    addressUpdated = true;
+                    addressUpdated = updateFields(addressFormFields.zip, gZip);
                 }
 
                 // custom update for this state
-                // @see https://www.facebook.com/notes/foursquare-french-su/r%C3%A8gles-conseils/352769948167141
+                // @see https://www.facebook.com/notes/foursquare-french-su/352769948167141
                 if (gAreaLvl1 === 'Provence-Alpes-Côte d\'Azur') {
                     gAreaLvl1 = 'PACA';
                 }
 
                 if ('' !== gAreaLvl1 && addressFormFields.state.length && gAreaLvl1 !== addressFormFields.state.val()) {
-                    addressFormFields.state.val(gAreaLvl1).change();
-                    addressFormFields.state.css('color', 'limegreen');
-
-                    addressUpdated = true;
+                    addressUpdated = updateFields(addressFormFields.state, gAreaLvl1);
                 }
 
                 if (gPostalTown !== "") {
@@ -586,7 +612,7 @@
                 }
 
                 if ('' !== gLocality && addressFormFields.city.length) {
-                    // Convert city from "Boulou (Le)" to "Le Boulou"
+                    // convert city from "Boulou (Le)" to "Le Boulou"
                     var regExp = /\(([^)]+)\)/;
                     var matches = regExp.exec(gLocality);
                     if (matches && matches[1]) {
@@ -594,11 +620,14 @@
                     }
 
                     if (gLocality !== addressFormFields.city.val()) {
-                        addressFormFields.city.val(gLocality).change();
-                        addressFormFields.city.css('color', 'limegreen');
-
-                        addressUpdated = true;
+                        addressUpdated = updateFields(addressFormFields.city, gLocality);
                     }
+                }
+
+                // convert "Centre Commercial" in "C.C"
+                var newName = addressFormFields.name.val().convertCC();
+                if (newName !== addressFormFields.name.val()) {
+                    addressUpdated = updateFields(addressFormFields.name, newName);
                 }
 
                 // try to update known company: twitter & url
@@ -606,8 +635,8 @@
                 // loop thru all the companies inside `_names`
                 for (var j = companies._names.length - 1; j >= 0; j--) {
                     // try to find a company using regex
-                    var regex = new RegExp(companies._names[j], "gi");
-                    if (regex.exec(addressFormFields.name.val())) {
+                    var regexCompany = new RegExp(companies._names[j], "gi");
+                    if (regexCompany.exec(addressFormFields.name.val())) {
                         // store the index that matche
                         companyIndexFound = companies._names[j];
                         break;
@@ -619,16 +648,11 @@
                     var companyFound = companies[companyIndexFound];
 
                     if (companyFound.twitter !== addressFormFields.twitter.val()) {
-                        addressFormFields.twitter.val(companyFound.twitter).change();
-                        addressFormFields.twitter.css('color', 'limegreen');
-
-                        addressUpdated = true;
+                        addressUpdated = updateFields(addressFormFields.twitter, companyFound.twitter);
                     }
-                    if (companyFound.url !== addressFormFields.url.val()) {
-                        addressFormFields.url.val(companyFound.url).change();
-                        addressFormFields.url.css('color', 'limegreen');
 
-                        addressUpdated = true;
+                    if (companyFound.url !== addressFormFields.url.val()) {
+                        addressUpdated = updateFields(addressFormFields.url, companyFound.url);
                     }
                 }
 
