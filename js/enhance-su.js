@@ -585,11 +585,20 @@
                     gLocality = gPostalTown;
                 }
 
-                if ('' !== gLocality && addressFormFields.city.length && gLocality !== addressFormFields.city.val()) {
-                    addressFormFields.city.val(gLocality).change();
-                    addressFormFields.city.css('color', 'limegreen');
+                if ('' !== gLocality && addressFormFields.city.length) {
+                    // Convert city from "Boulou (Le)" to "Le Boulou"
+                    var regExp = /\(([^)]+)\)/;
+                    var matches = regExp.exec(gLocality);
+                    if (matches && matches[1]) {
+                        gLocality = matches[1]+' '+gLocality.replace('('+matches[1]+')', '');
+                    }
 
-                    addressUpdated = true;
+                    if (gLocality !== addressFormFields.city.val()) {
+                        addressFormFields.city.val(gLocality).change();
+                        addressFormFields.city.css('color', 'limegreen');
+
+                        addressUpdated = true;
+                    }
                 }
 
                 // try to update known company: twitter & url

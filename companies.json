@@ -15,6 +15,7 @@
         "Simply Market",
         "Domino",
         "Fnac",
+        "Vélib",
         "BNP Paribas"
     ],
     "Décathlon": {
@@ -80,5 +81,9 @@
     "Fnac": {
         "twitter": "fnac",
         "url": "http://www.fnac.com"
+    },
+    "Vélib": {
+        "twitter": "velib_paris",
+        "url": "http://www.velib.paris.fr"
     }
 }
