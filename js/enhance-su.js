@@ -280,7 +280,7 @@
         var editPane = $('div.editPanes div.editPane');
 
         // if edit panel doesn't exists or enhancement already exists
-        if (!editPane.html() || $('#enhance-su-auto-address a.fix-address').html()) {
+        if (!editPane.html() || $('#enhance-su-auto-address a.fix-address').html() || !_foursquareStorage.exists('EFS-gmap-key')) {
             return;
         }
 
@@ -355,7 +355,7 @@
      */
     function displayFixAddressSuggestEdit () {
         // if edit panel doesn't exists or enhancement link already exists
-        if (!$('div.modalLoadingContainer div.inputArea').html() || $('#enhance-su-auto-address a.fix-address').html()) {
+        if (!$('div.modalLoadingContainer div.inputArea').html() || $('#enhance-su-auto-address a.fix-address').html() || !_foursquareStorage.exists('EFS-gmap-key')) {
             return;
         }
 
@@ -692,6 +692,36 @@
      * If so we add a user stats for all proposed suggestions / approved
      */
     if ('/edit/' === window.location.pathname) {
+        // Options to set the Google Maps API key - REQUIRED :)
+        if (!_foursquareStorage.exists('EFS-gmap-key')) {
+            var optionsHtml = ''+
+                '<div id="enhance-su-options">'+
+                    '<h2>Thanks for installing Enhance SU Tools !</h2>'+
+                    "<p><em>This message won't appear anymore after this step is completed.</em></p>"+
+                    "<p>In order to use the Google Maps API to automatically fix address you will need to provide a Google Maps API key. Don't worry, if you already have a Google Account, it will be a very easy step.</p>"+
+                    '<p>Everything is clearly explain <a href="https://developers.google.com/maps/documentation/javascript/tutorial#api_key" target="_blank">here</a>. Once you have your key, just past it in the input below. </p>'+
+                    '<input type="text" id="gmaps_api_key">'+
+                    '<button id="save">Save</button>'+
+                '</div>';
+
+            $('#container').prepend(optionsHtml);
+
+            $('#enhance-su-options #save').bind('click', function() {
+                var gmaps_api_key = $('input#gmaps_api_key').val();
+
+                // Google Maps API key seems to be 39 char long, little restriction then...
+                if (39 !== gmaps_api_key.length) {
+                    alert('This API key seems invalid, please follow step from the Google documentation.');
+                    $('input#gmaps_api_key').val('');
+                    return false;
+                }
+
+                _foursquareStorage.set('EFS-gmap-key', $('input#gmaps_api_key').val());
+                $('#enhance-su-options').hide();
+                _foursquareNotifier.info('Perfect ! You Google Maps API key is now saved. You can fully enjoy SU enhancement !');
+            });
+        }
+
         fourSq.api.services.User.flagStats(
             window.fourSq.config.user.USER_PROFILE.id,
             function (response, dataSuccess) {

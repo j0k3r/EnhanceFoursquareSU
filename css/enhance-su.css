@@ -42,3 +42,11 @@ div.accordian div.suggest-edit#enhance-su-auto-address {
 div#enhance-su-stats.queueWrapper ul li .userInfo .userStats {
     display: inline !important;
 }
+
+#enhance-su-options {
+    padding: 15px;
+}
+
+#gmaps_api_key {
+    width: 260px;
+}
