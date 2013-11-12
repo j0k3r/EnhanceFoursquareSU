@@ -26,7 +26,7 @@
      *
      * @return name updated (or not)
      */
-    String.prototype.convertCC = function () {
+    String.prototype.convertCC = function convertCC() {
         var regexCC = new RegExp('centre commercial', "i");
         if (regexCC.exec(this)) {
             return this.replace(/centre commercial/i, 'C.C');
@@ -41,7 +41,7 @@
      *
      * @from http://stackoverflow.com/a/1026087/569101
      */
-    String.prototype.lowercaseFirstLetter = function() {
+    String.prototype.lowercaseFirstLetter = function lowercaseFirstLetter() {
         return this.charAt(0).toLowerCase() + this.slice(1);
     };
 
@@ -237,7 +237,7 @@
 
         $('#enhance-su-block').append('<span id="enhance-su-flag-options">Flag as: '+select+'</span>');
 
-        $('#enhance-su-flag-options select').change(function() {
+        $('#enhance-su-flag-options select').change(function selectFlag() {
             var problem = $(this).val();
 
             if ('' === problem) {
@@ -256,7 +256,7 @@
             _foursquareApiVenue.flag(
                 editPane.data('venueid'),
                 flagInfos,
-                function (response, dataSuccess) {
+                function handleSuccess (response, dataSuccess) {
                     // store new flag for this venue
                     _foursquareStorage.set(storageKey, problem);
 
@@ -264,7 +264,7 @@
 
                     $('#enhance-su-flag-options').html('Flagged as: <strong>'+flagReasons[problem]+'</strong> !');
                 },
-                function (response, dataError) {
+                function handleError (response, dataError) {
                     _foursquareNotifier.error('Error: '+response.response.meta.errorDetail);
                 }
             );
@@ -325,7 +325,7 @@
      * @param  string   latlong             If defined, it will be used instead of address/city
      */
     function doBindFixAddress (addressFields, insertMessageAfter, latlong) {
-        $('#enhance-su-auto-address a.fix-address').bind('click', function() {
+        $('#enhance-su-auto-address a.fix-address').bind('click', function updateAddress() {
             var addressSearchQuery = addressFields.address.val();
             var city = addressFields.city.val();
 
@@ -401,7 +401,7 @@
         $('div.buttons span.cancelEditButton, div.editPane span.xButton').bind(
             'click',
             {addressFormFields: addressFields},
-            function(event) {
+            function handleCancelButton(event) {
                 $('.enhance-su-message-error').remove();
                 $('.enhance-su-message-warning').remove();
 
@@ -424,7 +424,7 @@
         $('#enhance-su-auto-address-rollback').bind(
             'click',
             {addressFormFields: addressFields},
-            function(event) {
+            function handleCancelButton(event) {
                 doAddressRollback(this, event.data.addressFormFields);
 
                 // it's coming from a link, so we cancel the href '#'
@@ -509,7 +509,7 @@
         var geocoder = new google.maps.Geocoder();
         geocoder.geocode(
             {'address': dataUrl},
-            function(results, status) {
+            function handleResults(results, status) {
                 if (status !== "OK") {
                     loadingImg.hide();
                     _foursquareNotifier.info('Google did not find a matching address: '+status);
@@ -706,7 +706,7 @@
 
             $('#container').prepend(optionsHtml);
 
-            $('#enhance-su-options #save').bind('click', function() {
+            $('#enhance-su-options #save').bind('click', function handleOptionsSave() {
                 var gmaps_api_key = $('input#gmaps_api_key').val();
 
                 // Google Maps API key seems to be 39 char long, little restriction then...
@@ -724,7 +724,7 @@
 
         fourSq.api.services.User.flagStats(
             window.fourSq.config.user.USER_PROFILE.id,
-            function (response, dataSuccess) {
+            function handleSuccess(response, dataSuccess) {
                 var processed = 0;
                 var proposed = 0;
                 var processedApproved = 0;
@@ -816,7 +816,7 @@
                     allStatsList.append(statTpl);
                 }
             },
-            function (response, dataError) {
+            function handleError(response, dataError) {
                 _foursquareNotifier.error('Error: '+response.response.meta.errorDetail);
             }
         );
