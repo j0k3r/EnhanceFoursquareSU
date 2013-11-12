@@ -532,7 +532,7 @@
                     return;
                 }
 
-                for (var i = 0; i < results[0].address_components.length; i++) {
+                for (var i = results[0].address_components.length - 1; i >= 0; i--) {
                     var addressComponent = results[0].address_components[i];
                     if (addressComponent.types.indexOf("route") > -1) {
                         gRoute = addressComponent.long_name;
