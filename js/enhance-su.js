@@ -624,35 +624,37 @@
                     }
                 }
 
-                // convert "Centre Commercial" in "C.C"
-                var newName = addressFormFields.name.val().convertCC();
-                if (newName !== addressFormFields.name.val()) {
-                    addressUpdated = updateFields(addressFormFields.name, newName);
-                }
-
-                // try to update known company: twitter & url
-                var companyIndexFound = '';
-                // loop thru all the companies inside `_names`
-                for (var j = companies._names.length - 1; j >= 0; j--) {
-                    // try to find a company using regex
-                    var regexCompany = new RegExp(companies._names[j], "gi");
-                    if (regexCompany.exec(addressFormFields.name.val())) {
-                        // store the index that matche
-                        companyIndexFound = companies._names[j];
-                        break;
-                    }
-                }
-
-                // do we find a company ?
-                if ('' !== companyIndexFound) {
-                    var companyFound = companies[companyIndexFound];
-
-                    if (companyFound.twitter !== addressFormFields.twitter.val()) {
-                        addressUpdated = updateFields(addressFormFields.twitter, companyFound.twitter);
+                if (addressFormFields.name.val()) {
+                    // convert "Centre Commercial" in "C.C"
+                    var newName = addressFormFields.name.val().convertCC();
+                    if (newName !== addressFormFields.name.val()) {
+                        addressUpdated = updateFields(addressFormFields.name, newName);
                     }
 
-                    if (companyFound.url !== addressFormFields.url.val()) {
-                        addressUpdated = updateFields(addressFormFields.url, companyFound.url);
+                    // try to update known company: twitter & url
+                    var companyIndexFound = '';
+                    // loop thru all the companies inside `_names`
+                    for (var j = companies._names.length - 1; j >= 0; j--) {
+                        // try to find a company using regex
+                        var regexCompany = new RegExp(companies._names[j], "gi");
+                        if (regexCompany.exec(addressFormFields.name.val())) {
+                            // store the index that matche
+                            companyIndexFound = companies._names[j];
+                            break;
+                        }
+                    }
+
+                    // do we find a company ?
+                    if ('' !== companyIndexFound) {
+                        var companyFound = companies[companyIndexFound];
+
+                        if (companyFound.twitter !== addressFormFields.twitter.val()) {
+                            addressUpdated = updateFields(addressFormFields.twitter, companyFound.twitter);
+                        }
+
+                        if (companyFound.url !== addressFormFields.url.val()) {
+                            addressUpdated = updateFields(addressFormFields.url, companyFound.url);
+                        }
                     }
                 }
 
