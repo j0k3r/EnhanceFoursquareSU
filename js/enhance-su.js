@@ -597,12 +597,6 @@
                     addressUpdated = updateFields(addressFormFields.zip, gZip);
                 }
 
-                // custom update for this state
-                // @see https://www.facebook.com/notes/foursquare-french-su/352769948167141
-                if (gAreaLvl1 === 'Provence-Alpes-Côte d\'Azur') {
-                    gAreaLvl1 = 'PACA';
-                }
-
                 if ('' !== gAreaLvl1 && addressFormFields.state.length && gAreaLvl1 !== addressFormFields.state.val()) {
                     addressUpdated = updateFields(addressFormFields.state, gAreaLvl1);
                 }
