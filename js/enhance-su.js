@@ -575,21 +575,29 @@
                  *  - that the new value isn't the same as the old one
                  */
 
-                if ('' !== gRoute && addressFormFields.address.length) {
-                    var formattedAddress = results[0].formatted_address;
-                    var formattedAddressClean = gRoute.trim();
-                    if (gStreeNumber !== "") {
-                        if (formattedAddress.indexOf(gRoute) > formattedAddress.indexOf(gStreeNumber)) {
-                            formattedAddressClean = gStreeNumber + " " + formattedAddressClean.lowercaseFirstLetter();
-                        } else {
-                            formattedAddressClean += " " + gStreeNumber;
+                if (addressFormFields.address.length) {
+                    if ('' !== gRoute) {
+                        var formattedAddress = results[0].formatted_address;
+                        var formattedAddressClean = gRoute.trim();
+                        if (gStreeNumber !== "") {
+                            if (formattedAddress.indexOf(gRoute) > formattedAddress.indexOf(gStreeNumber)) {
+                                formattedAddressClean = gStreeNumber + " " + formattedAddressClean.lowercaseFirstLetter();
+                            } else {
+                                formattedAddressClean += " " + gStreeNumber;
+                            }
                         }
-                    }
 
-                    formattedAddressClean = formattedAddressClean.convertCC();
+                        formattedAddressClean = formattedAddressClean.convertCC();
 
-                    if (formattedAddressClean !== addressFormFields.address.val()) {
-                        addressUpdated = updateFields(addressFormFields.address, formattedAddressClean);
+                        if (formattedAddressClean !== addressFormFields.address.val()) {
+                            addressUpdated = updateFields(addressFormFields.address, formattedAddressClean);
+                        }
+                    } else {
+                        // in case of no address update, we try to convert "Centre Commercial" in "C.C"
+                        var newAddress = addressFormFields.address.val().convertCC();
+                        if (newAddress !== addressFormFields.address.val()) {
+                            addressUpdated = updateFields(addressFormFields.address, newAddress);
+                        }
                     }
                 }
 
