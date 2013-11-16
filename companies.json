@@ -17,6 +17,7 @@
         "Fnac",
         "Vélib",
         "Brioche Dorée",
+        "Franprix",
         "BNP Paribas"
     ],
     "Décathlon": {
@@ -90,5 +91,9 @@
     "Brioche Dorée": {
         "twitter": "brioche_doree",
         "url": "http://www.briochedoree.fr"
+    },
+    "Franprix": {
+        "twitter": "franprix",
+        "url": "http://www.franprix.fr"
     }
 }
