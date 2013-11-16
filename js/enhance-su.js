@@ -535,29 +535,29 @@
                 for (var i = results[0].address_components.length - 1; i >= 0; i--) {
                     var addressComponent = results[0].address_components[i];
                     if (addressComponent.types.indexOf("route") > -1) {
-                        gRoute = addressComponent.long_name;
+                        gRoute = addressComponent.long_name.trim();
                     } else {
                         if (addressComponent.types.indexOf("street_number") > -1) {
-                            gStreeNumber = addressComponent.long_name;
+                            gStreeNumber = addressComponent.long_name.trim();
                         } else {
                             if (addressComponent.types.indexOf("locality") > -1) {
-                                gLocality = addressComponent.long_name;
+                                gLocality = addressComponent.long_name.trim();
                             } else {
                                 if (addressComponent.types.indexOf("postal_code") > -1) {
-                                    gZip = addressComponent.long_name;
+                                    gZip = addressComponent.long_name.trim();
                                 } else {
                                     if (addressComponent.types.indexOf("administrative_area_level_1") > -1) {
-                                        gAreaLvl1 = addressComponent.long_name;
+                                        gAreaLvl1 = addressComponent.long_name.trim();
                                         gAreaLvl1Short = addressComponent.short_name;
                                     } else {
                                         if (addressComponent.types.indexOf("administrative_area_level_2") > -1) {
-                                            gAreaLvl2 = addressComponent.long_name;
+                                            gAreaLvl2 = addressComponent.long_name.trim();
                                         } else {
                                             if (addressComponent.types.indexOf("country") > -1) {
                                                 gCountry = addressComponent.short_name;
                                             } else {
                                                 if (addressComponent.types.indexOf("postal_town") > -1) {
-                                                    gPostalTown = addressComponent.long_name;
+                                                    gPostalTown = addressComponent.long_name.trim();
                                                 }
                                             }
                                         }
@@ -624,7 +624,7 @@
                     var regExp = /\(([^)]+)\)/;
                     var matches = regExp.exec(gLocality);
                     if (matches && matches[1]) {
-                        gLocality = matches[1]+' '+gLocality.replace('('+matches[1]+')', '');
+                        gLocality = (matches[1]+' '+gLocality.replace('('+matches[1]+')', '')).trim();
                     }
 
                     if (gLocality !== addressFormFields.city.val()) {
