@@ -7,7 +7,7 @@
         "Subway",
         "Buffalo Grill",
         "Carrefour",
-        "Monoprix",
+        "Monop",
         "KFC",
         "Etam",
         "Norauto",
@@ -48,7 +48,7 @@
         "twitter": "carrefourfrance",
         "url": "http://www.carrefour.fr"
     },
-    "Monoprix": {
+    "Monop": {
         "twitter": "monoprix",
         "url": "http://www.monoprix.fr"
     },
