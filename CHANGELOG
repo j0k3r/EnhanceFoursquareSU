@@ -1,7 +1,8 @@
-# Enhance Foursquare SU - Changelog
+# Su Power Tools - Changelog
 
 ## v0.3 (...)
 
+ - Rebranded to "Su Power Tools"
  - Use Foursquare notifier (to notify uh!)
  - Add a twitter link next to the url in /edit
  - Add some stats for the logged user on the dashboard

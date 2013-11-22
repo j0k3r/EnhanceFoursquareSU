@@ -2,7 +2,7 @@
     "use strict";
     // var gmapsApi = 'http://maps.kimtrip.net';
     var gmapsApi = '//maps.googleapis.com/maps/api/geocode/json';
-    var jsonCompanies = '//rawgithub.com/j0k3r/EnhanceFoursquareSU/master/companies.json';
+    var jsonCompanies = '//rawgithub.com/j0k3r/SUPowerTools/master/companies.json';
     var oldAddressValues = {};
     var companies = [];
 
@@ -21,7 +21,7 @@
     var _foursquareApiVenue;
     var _foursquareStorage;
 
-    var flagInfos = { comment: 'Marked via Enhance Foursquare SU' };
+    var flagInfos = { comment: 'Marked via SU PowerTools' };
 
     /**
      * convert "Centre Commercial" in "C.C"
@@ -88,11 +88,11 @@
 
     function initializeEnhanceBlock () {
         // avoid duplicate enhancement
-        if ($('#enhance-su-block').html()) {
+        if ($('#su-powertools-block').html()) {
             return;
         }
 
-        $('#overlayHeader div.venueInfo.hasRedMarker').prepend('<p id="enhance-su-block"></p>');
+        $('#overlayHeader div.venueInfo.hasRedMarker').prepend('<p id="su-powertools-block"></p>');
     }
 
     /**
@@ -106,7 +106,7 @@
         var searchLink = $('div.venueInfoText a.searchLink');
 
         // avoid duplicate enhancement
-        if ($('#enhance-su-search').html() || !searchLink.html()) {
+        if ($('#su-powertools-search').html() || !searchLink.html()) {
             return;
         }
 
@@ -131,7 +131,7 @@
 
         var searchMaps = '<a target="_blank" href="' + hrefMaps + '">Google Maps</a>';
 
-        $('#enhance-su-block').append('<span id="enhance-su-search">Search on: ' + searchGoogle + ' - ' + searchMaps + '</span>');
+        $('#su-powertools-block').append('<span id="su-powertools-search">Search on: ' + searchGoogle + ' - ' + searchMaps + '</span>');
 
         // add twitter next to the venue url
         var twitter = $('li.field.simpleField[data-key="twitter"] input').val();
@@ -149,24 +149,24 @@
      */
     function enhanceSearchSuggestEdit () {
         // avoid duplicate enhancement
-        if ($('#enhance-su-auto-address').html()) {
+        if ($('#su-powertools-auto-address').html()) {
             return;
         }
 
-        $('<div class="suggest-edit" id="enhance-su-auto-address"></div>').insertAfter('input.formStyle.venueNameInput.flagEditInput');
+        $('<div class="suggest-edit" id="su-powertools-auto-address"></div>').insertAfter('input.formStyle.venueNameInput.flagEditInput');
 
         // add Google link
         var hrefGoogle = 'https://www.google.com/search?q='+
             encodeURIComponent($('input.formStyle.venueNameInput.flagEditInput').val())+' '+
             encodeURIComponent($('input.formStyle.flagEditInput.city').val());
 
-        $('#enhance-su-auto-address').append('Search on: <a target="_blank" href="'+hrefGoogle+'">Google</a>');
+        $('#su-powertools-auto-address').append('Search on: <a target="_blank" href="'+hrefGoogle+'">Google</a>');
 
         // add Google Maps link
         var hrefMaps = 'https://maps.google.com/maps?q='+
             encodeURIComponent($('div.accordianHeader.expandable div.headerVenueText').html());
 
-        $('#enhance-su-auto-address').append(' - <a target="_blank" href="'+hrefMaps+'">Google Maps</a>');
+        $('#su-powertools-auto-address').append(' - <a target="_blank" href="'+hrefMaps+'">Google Maps</a>');
     }
 
     /**
@@ -178,7 +178,7 @@
      */
     function displayEmptyValue () {
         // if edit panel doesn't exists or enhancement already exists
-        if (!$('div.editPanes div.editPane').html() || $('#enhance-su-edit-location').html()) {
+        if (!$('div.editPanes div.editPane').html() || $('#su-powertools-edit-location').html()) {
             return;
         }
 
@@ -196,14 +196,14 @@
             return;
         }
 
-        var text = '<span id="enhance-su-edit-location"><b>' + emptyValues.length + '</b> empty fields: ' + emptyValues.join(', ') + '</span>';
+        var text = '<span id="su-powertools-edit-location"><b>' + emptyValues.length + '</b> empty fields: ' + emptyValues.join(', ') + '</span>';
 
         // display a more visible message if there is a lot of empty fields
         if (6 < emptyValues.length) {
-            text = '<span id="enhance-su-edit-location"><b>' + emptyValues.length + ' empty fields !</b></span>';
+            text = '<span id="su-powertools-edit-location"><b>' + emptyValues.length + ' empty fields !</b></span>';
         }
 
-        $('#enhance-su-block').append(text);
+        $('#su-powertools-block').append(text);
     }
 
     /**
@@ -216,16 +216,16 @@
         var editPane = $('div.editPanes div.editPane');
 
         // if edit panel doesn't exists or enhancement already exists
-        if (!editPane.html() || $('#enhance-su-flag-options').html()) {
+        if (!editPane.html() || $('#su-powertools-flag-options').html()) {
             return;
         }
 
         // check if current venue has already been flagged
-        var storageKey = 'EFS-flag-'+editPane.data('venueid');
+        var storageKey = 'SPT-flag-'+editPane.data('venueid');
         if (true === _foursquareStorage.exists(storageKey)) {
             // @todo: check if the flag is gone
 
-            $('#enhance-su-block').append('<span id="enhance-su-flag-options"><strong>Already flagged as: '+flagReasons[_foursquareStorage.get(storageKey)]+'</strong></span>');
+            $('#su-powertools-block').append('<span id="su-powertools-flag-options"><strong>Already flagged as: '+flagReasons[_foursquareStorage.get(storageKey)]+'</strong></span>');
 
             return;
         }
@@ -237,9 +237,9 @@
         });
         select += '</select>';
 
-        $('#enhance-su-block').append('<span id="enhance-su-flag-options">Flag as: '+select+'</span>');
+        $('#su-powertools-block').append('<span id="su-powertools-flag-options">Flag as: '+select+'</span>');
 
-        $('#enhance-su-flag-options select').change(function selectFlag() {
+        $('#su-powertools-flag-options select').change(function selectFlag() {
             var problem = $(this).val();
 
             if ('' === problem) {
@@ -264,7 +264,7 @@
 
                     _foursquareNotifier.info('Venue reported as "'+flagReasons[problem]+'".');
 
-                    $('#enhance-su-flag-options').html('Flagged as: <strong>'+flagReasons[problem]+'</strong> !');
+                    $('#su-powertools-flag-options').html('Flagged as: <strong>'+flagReasons[problem]+'</strong> !');
                 },
                 function handleError (response, dataError) {
                     _foursquareNotifier.error('Error: '+response.response.meta.errorDetail);
@@ -282,7 +282,7 @@
         var editPane = $('div.editPanes div.editPane');
 
         // if edit panel doesn't exists or enhancement already exists
-        if (!editPane.html() || $('#enhance-su-auto-address a.fix-address').html() || !_foursquareStorage.exists('EFS-gmap-key')) {
+        if (!editPane.html() || $('#su-powertools-auto-address a.fix-address').html() || !_foursquareStorage.exists('SPT-gmap-key')) {
             return;
         }
 
@@ -290,7 +290,7 @@
         // is empty after the first enhancement
         oldAddressValues = {};
 
-        $('div.editPanes div.editPane h3').append('<div id="enhance-su-auto-address"><a class="fix-address" href="#">Fix address</a> <img style="display: none" src="//i.imgur.com/Srmlo6N.gif" /></div>');
+        $('div.editPanes div.editPane h3').append('<div id="su-powertools-auto-address"><a class="fix-address" href="#">Fix address</a> <img style="display: none" src="//i.imgur.com/Srmlo6N.gif" /></div>');
 
         var addressFields = {
             name: $('li.field.simpleField[data-key="name"] input'),
@@ -327,7 +327,7 @@
      * @param  string   latlong             If defined, it will be used instead of address/city
      */
     function doBindFixAddress (addressFields, insertMessageAfter, latlong) {
-        $('#enhance-su-auto-address a.fix-address').bind('click', function updateAddress() {
+        $('#su-powertools-auto-address a.fix-address').bind('click', function updateAddress() {
             var addressSearchQuery = addressFields.address.val();
             var city = addressFields.city.val();
 
@@ -357,7 +357,7 @@
      */
     function displayFixAddressSuggestEdit () {
         // if edit panel doesn't exists or enhancement link already exists
-        if (!$('div.modalLoadingContainer div.inputArea').html() || $('#enhance-su-auto-address a.fix-address').html() || !_foursquareStorage.exists('EFS-gmap-key')) {
+        if (!$('div.modalLoadingContainer div.inputArea').html() || $('#su-powertools-auto-address a.fix-address').html() || !_foursquareStorage.exists('SPT-gmap-key')) {
             return;
         }
 
@@ -368,7 +368,7 @@
             return;
         }
 
-        $('#enhance-su-auto-address').append('<br/>Or <a class="fix-address" href="#">fix the address</a> <img style="display: none" src="//i.imgur.com/Srmlo6N.gif" />');
+        $('#su-powertools-auto-address').append('<br/>Or <a class="fix-address" href="#">fix the address</a> <img style="display: none" src="//i.imgur.com/Srmlo6N.gif" />');
 
         var addressFields = {
             name: $('input.formStyle.venueNameInput.flagEditInput'),
@@ -381,7 +381,7 @@
         };
 
         // bind link
-        doBindFixAddress(addressFields, '#enhance-su-auto-address', latlong.val());
+        doBindFixAddress(addressFields, '#su-powertools-auto-address', latlong.val());
     }
 
     /**
@@ -391,11 +391,11 @@
      */
     function bindAddressRollBack (addressFields) {
         // once the rollback is display, we won't reload it
-        if ($('#enhance-su-auto-address-rollback').html()) {
+        if ($('#su-powertools-auto-address-rollback').html()) {
             return;
         }
 
-        $('<span> - </span><a href="#" id="enhance-su-auto-address-rollback">rollback change</a>').insertAfter('#enhance-su-auto-address a.fix-address');
+        $('<span> - </span><a href="#" id="su-powertools-auto-address-rollback">rollback change</a>').insertAfter('#su-powertools-auto-address a.fix-address');
 
         // handle cancel button click (and closing button - on the top right)
         // Foursquare will already re-apply old values, we just need to remove rollback link
@@ -404,8 +404,8 @@
             'click',
             {addressFormFields: addressFields},
             function handleCancelButton(event) {
-                $('.enhance-su-message-error').remove();
-                $('.enhance-su-message-warning').remove();
+                $('.su-powertools-message-error').remove();
+                $('.su-powertools-message-warning').remove();
 
                 event.data.addressFormFields.name.css('color', '#4d4d4d');
                 event.data.addressFormFields.address.css('color', '#4d4d4d');
@@ -415,7 +415,7 @@
                 event.data.addressFormFields.twitter.css('color', '#4d4d4d');
                 event.data.addressFormFields.url.css('color', '#4d4d4d');
 
-                var rollbackBlock = $('#enhance-su-auto-address-rollback');
+                var rollbackBlock = $('#su-powertools-auto-address-rollback');
                 rollbackBlock.prev('span').remove();
                 rollbackBlock.remove();
 
@@ -423,7 +423,7 @@
             }
         );
 
-        $('#enhance-su-auto-address-rollback').bind(
+        $('#su-powertools-auto-address-rollback').bind(
             'click',
             {addressFormFields: addressFields},
             function handleCancelButton(event) {
@@ -440,8 +440,8 @@
      */
     function doAddressRollback (element, addressFields) {
         // clean message since we rollback
-        $('.enhance-su-message-error').remove();
-        $('.enhance-su-message-warning').remove();
+        $('.su-powertools-message-error').remove();
+        $('.su-powertools-message-warning').remove();
 
         addressFields.name.val(oldAddressValues.name);
         addressFields.name.css('color', '#4d4d4d');
@@ -479,8 +479,8 @@
      * @param  element loadingImg           Element to show/hide for interactivity
      */
     function setAddressFromGoogle (address, city, addressFormFields, loadingImg, insertMessageAfter) {
-        $('.enhance-su-message-error').remove();
-        $('.enhance-su-message-warning').remove();
+        $('.su-powertools-message-error').remove();
+        $('.su-powertools-message-warning').remove();
 
         loadingImg.show();
 
@@ -677,7 +677,7 @@
 
                     // do notify about many results only in case that address has beed updated
                     if (data.results.length > 1) {
-                        $(insertMessageAfter).append('<span class="enhance-su-message-warning">The result may be inaccurate, please check the data.</span>');
+                        $(insertMessageAfter).append('<span class="su-powertools-message-warning">The result may be inaccurate, please check the data.</span>');
                     }
 
                     _foursquareNotifier.info('Address updated !');
@@ -687,19 +687,19 @@
             },
             statusCode: {
                 0: function () {
-                    $(insertMessageAfter).append('<span class="enhance-su-message-error">Google Maps API connector is not available, please try again later.</span>');
+                    $(insertMessageAfter).append('<span class="su-powertools-message-error">Google Maps API connector is not available, please try again later.</span>');
                     loadingImg.hide();
                 },
                 403: function () {
-                    $(insertMessageAfter).append('<span class="enhance-su-message-error">Permission denied using Google Maps API, please try again later.</span>');
+                    $(insertMessageAfter).append('<span class="su-powertools-message-error">Permission denied using Google Maps API, please try again later.</span>');
                     loadingImg.hide();
                 },
                 404: function () {
-                    $(insertMessageAfter).append('<span class="enhance-su-message-error">Google Maps API connector not found, please try again later.</span>');
+                    $(insertMessageAfter).append('<span class="su-powertools-message-error">Google Maps API connector not found, please try again later.</span>');
                     loadingImg.hide();
                 },
                 500: function () {
-                    $(insertMessageAfter).append('<span class="enhance-su-message-error">Google Maps API internal error, please try again later.</span>');
+                    $(insertMessageAfter).append('<span class="su-powertools-message-error">Google Maps API internal error, please try again later.</span>');
                     loadingImg.hide();
                 }
             }
@@ -725,10 +725,10 @@
      */
     if ('/edit/' === window.location.pathname) {
         // Options to set the Google Maps API key - REQUIRED :)
-        if (!_foursquareStorage.exists('EFS-gmap-key')) {
+        if (!_foursquareStorage.exists('SPT-gmap-key')) {
             var optionsHtml = ''+
-                '<div id="enhance-su-options">'+
-                    '<h2>Thanks for installing Enhance SU Tools !</h2>'+
+                '<div id="su-powertools-options">'+
+                    '<h2>Thanks for installing SU PowerTools !</h2>'+
                     "<p><em>This message won't appear anymore after this step is completed.</em></p>"+
                     "<p>In order to use the Google Maps API to automatically fix address you will need to provide a Google Maps API key. Don't worry, if you already have a Google Account, it will be a very easy step.</p>"+
                     '<p>Everything is clearly explain <a href="https://developers.google.com/maps/documentation/javascript/tutorial#api_key" target="_blank">here</a>. Once you have your key, just past it in the input below. </p>'+
@@ -738,7 +738,7 @@
 
             $('#container').prepend(optionsHtml);
 
-            $('#enhance-su-options #save').bind('click', function handleOptionsSave() {
+            $('#su-powertools-options #save').bind('click', function handleOptionsSave() {
                 var gmaps_api_key = $('input#gmaps_api_key').val();
 
                 // Google Maps API key seems to be 39 char long, little restriction then...
@@ -748,9 +748,9 @@
                     return false;
                 }
 
-                _foursquareStorage.set('EFS-gmap-key', $('input#gmaps_api_key').val());
-                $('#enhance-su-options').hide();
-                _foursquareNotifier.info('Perfect ! You Google Maps API key is now saved. You can fully enjoy SU enhancement !');
+                _foursquareStorage.set('SPT-gmap-key', $('input#gmaps_api_key').val());
+                $('#su-powertools-options').hide();
+                _foursquareNotifier.info('Perfect ! You Google Maps API key is now saved. You can fully enjoy SU Power Tools !');
             });
         }
 
@@ -769,9 +769,9 @@
                     proposedApproved += response.stats[i].proposedApproved;
                 }
 
-                $('<div class="queueWrapper" id="enhance-su-stats"><h3>Your Stats</h3><ul class="queueLinks"></ul></div><br/><br/>').insertBefore('#su-tools-dash div.wideColumn div.queueWrapper');
+                $('<div class="queueWrapper" id="su-powertools-stats"><h3>Your Stats</h3><ul class="queueLinks"></ul></div><br/><br/>').insertBefore('#su-tools-dash div.wideColumn div.queueWrapper');
 
-                var allStatsList = $('#enhance-su-stats ul.queueLinks');
+                var allStatsList = $('#su-powertools-stats ul.queueLinks');
 
                 var tpl = ''+
                 '<li class="queueLinkItem">'+

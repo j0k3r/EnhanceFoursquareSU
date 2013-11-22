@@ -1,49 +1,49 @@
-#enhance-su-block {
+#su-powertools-block {
     border-bottom: 1px solid #e8e9eb;
     padding-bottom: 5px;
 }
 
-#enhance-su-block span {
+#su-powertools-block span {
     display: block
 }
 
-#enhance-su-block b {
+#su-powertools-block b {
     font-weight: bold;
 }
 
-div.accordian div.suggest-edit#enhance-su-auto-address {
+div.accordian div.suggest-edit#su-powertools-auto-address {
     border: 1px solid #c4e6ee;
     border-radius: 4px;
     padding: 5px;
     margin-bottom: 5px;
 }
 
-#enhance-su-auto-address a, .enhance-su-message-error, .enhance-su-message-warning, #enhance-su-auto-address span {
+#su-powertools-auto-address a, .su-powertools-message-error, .su-powertools-message-warning, #su-powertools-auto-address span {
     font: normal 13px/140% "Helvetica Neue",Helvetica,Verdana,Arial,sans-serif-webkit-body
 }
 
-.enhance-su-message-error {
+.su-powertools-message-error {
     color: red;
     display: block;
 }
 
-.enhance-su-message-warning {
+.su-powertools-message-warning {
     color: orange;
     display: block;
 }
 
-#enhance-su-flag-options select {
+#su-powertools-flag-options select {
     overflow: hidden;
     border: 1px solid #ccc;
     background: transparent;
     color: #999999;
 }
 
-div#enhance-su-stats.queueWrapper ul li .userInfo .userStats {
+div#su-powertools-stats.queueWrapper ul li .userInfo .userStats {
     display: inline !important;
 }
 
-#enhance-su-options {
+#su-powertools-options {
     padding: 15px;
 }
 

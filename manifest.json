@@ -1,8 +1,8 @@
 {
-    "name": "Enhance Foursquare SU",
+    "name": "SU Power Tools - Foursquare extension for Superusers",
     "version": "0.3",
-    "description": "It makes some improvement to the Foursquare SU interface.",
-    "homepage_url": "https://github.com/j0k3r/EnhanceFoursquareSU",
+    "description": "It makes some useful improvement to the Foursquare SU Tools.",
+    "homepage_url": "https://github.com/j0k3r/SUPowerTools",
     "manifest_version": 2,
     "permissions": [
         "https://maps.googleapis.com/",
@@ -16,7 +16,7 @@
     "web_accessible_resources": [
         "js/vendor/jquery-2.0.3.min.js",
         "js/vendor/jquery-2.0.3.min.map",
-        "js/enhance-su.js"
+        "js/supowertools.js"
     ],
     "content_scripts": [
         {
@@ -27,7 +27,7 @@
                 "*://foursquare.com/v/*"
             ],
             "css": [
-                "css/enhance-su.css"
+                "css/supowertools.css"
             ],
             "js": [
                 "js/vendor/jquery-2.0.3.min.js",

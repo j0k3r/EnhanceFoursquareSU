@@ -1,6 +1,6 @@
-# Enhance Foursquare SU
+# SU Power Tools
 
-**EnhanceFoursquareSU** is a very lightweight Chrome extension that makes some improvement to the Foursquare SU interface.
+**Su Power Tools** is a very lightweight Chrome extension that makes some improvement to the Foursquare SU Tools.
 
 ## Enhancement
 
@@ -53,8 +53,8 @@
 * Open Tools > Extensions menu in Chrome
 * Enable _developer mode_
 * Click on _load the unpacked extension_
-* Select the path to your local copy of **EnhanceFoursquareSU**
+* Select the path to your local copy of **SUPowerTools**
 
 ## License
 
-Enhance Foursquare SU is licensed under the [MIT license](LICENSE).
+SU Power Tools is licensed under the [MIT license](LICENSE).
