@@ -1,5 +1,7 @@
 (function () {
     "use strict";
+    // var gmapsApi = 'http://maps.kimtrip.net';
+    var gmapsApi = '//maps.googleapis.com/maps/api/geocode/json';
     var jsonCompanies = '//rawgithub.com/j0k3r/EnhanceFoursquareSU/master/companies.json';
     var oldAddressValues = {};
     var companies = [];
@@ -501,18 +503,20 @@
 
         // don't add city if it's not provided
         // could make bad result if it's combined with lat/long
-        var dataUrl = address;
+        var dataUrl = "sensor=false&address=" + encodeURIComponent(address);
         if ('' !== city) {
-            dataUrl += "," + city;
+            dataUrl += "," + encodeURIComponent(city);
         }
 
-        var geocoder = new google.maps.Geocoder();
-        geocoder.geocode(
-            {'address': dataUrl},
-            function handleResults(results, status) {
-                if (status !== "OK") {
+        $.ajax({
+            type: "GET",
+            url: gmapsApi,
+            data: dataUrl,
+            dataType: "json",
+            success: function (data, textStatus, jqXHR) {
+                if (data.status !== "OK") {
                     loadingImg.hide();
-                    _foursquareNotifier.info('Google did not find a matching address: '+status);
+                    _foursquareNotifier.info('Google did not find a matching address: '+data.status);
                     return;
                 }
 
@@ -527,13 +531,13 @@
                 var gCountry = "";
 
                 // empty result ? Do nothing.
-                if (results.length <= 0) {
+                if (data.results.length <= 0) {
                     loadingImg.hide();
                     return;
                 }
 
-                for (var i = results[0].address_components.length - 1; i >= 0; i--) {
-                    var addressComponent = results[0].address_components[i];
+                for (var i = data.results[0].address_components.length - 1; i >= 0; i--) {
+                    var addressComponent = data.results[0].address_components[i];
                     if (addressComponent.types.indexOf("route") > -1) {
                         gRoute = addressComponent.long_name.trim();
                     } else {
@@ -577,7 +581,7 @@
 
                 if (addressFormFields.address.length) {
                     if ('' !== gRoute) {
-                        var formattedAddress = results[0].formatted_address;
+                        var formattedAddress = data.results[0].formatted_address;
                         var formattedAddressClean = gRoute.trim();
                         if (gStreeNumber !== "") {
                             if (formattedAddress.indexOf(gRoute) > formattedAddress.indexOf(gStreeNumber)) {
@@ -672,7 +676,7 @@
                     bindAddressRollBack(addressFormFields);
 
                     // do notify about many results only in case that address has beed updated
-                    if (results.length > 1) {
+                    if (data.results.length > 1) {
                         $(insertMessageAfter).append('<span class="enhance-su-message-warning">The result may be inaccurate, please check the data.</span>');
                     }
 
@@ -680,8 +684,26 @@
                 } else {
                     _foursquareNotifier.info('Nothing to update');
                 }
+            },
+            statusCode: {
+                0: function () {
+                    $(insertMessageAfter).append('<span class="enhance-su-message-error">Google Maps API connector is not available, please try again later.</span>');
+                    loadingImg.hide();
+                },
+                403: function () {
+                    $(insertMessageAfter).append('<span class="enhance-su-message-error">Permission denied using Google Maps API, please try again later.</span>');
+                    loadingImg.hide();
+                },
+                404: function () {
+                    $(insertMessageAfter).append('<span class="enhance-su-message-error">Google Maps API connector not found, please try again later.</span>');
+                    loadingImg.hide();
+                },
+                500: function () {
+                    $(insertMessageAfter).append('<span class="enhance-su-message-error">Google Maps API internal error, please try again later.</span>');
+                    loadingImg.hide();
+                }
             }
-        );
+        });
     }
 
     // be sure that every new venue will be updated
