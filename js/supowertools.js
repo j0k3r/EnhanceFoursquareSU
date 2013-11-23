@@ -542,7 +542,7 @@
                         gRoute = addressComponent.long_name.trim();
                     } else {
                         if (addressComponent.types.indexOf("street_number") > -1) {
-                            gStreeNumber = addressComponent.long_name.trim();
+                            gStreeNumber = addressComponent.long_name.trim().toLowerCase();
                         } else {
                             if (addressComponent.types.indexOf("locality") > -1) {
                                 gLocality = addressComponent.long_name.trim();
