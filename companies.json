@@ -3,7 +3,6 @@
         "Décathlon",
         "McDonald's",
         "Gare SNCF",
-        "RER",
         "Subway",
         "Buffalo Grill",
         "Carrefour",
@@ -18,6 +17,7 @@
         "Vélib",
         "Brioche Dorée",
         "Franprix",
+        "Sephora",
         "BNP Paribas"
     ],
     "Décathlon": {
@@ -29,10 +29,6 @@
         "url": "http://www.mcdonalds.fr"
     },
     "Gare SNCF": {
-        "twitter": "infos_gares",
-        "url": "http://www.gares-en-mouvement.com"
-    },
-    "RER": {
         "twitter": "infos_gares",
         "url": "http://www.gares-en-mouvement.com"
     },
@@ -95,5 +91,9 @@
     "Franprix": {
         "twitter": "franprix",
         "url": "http://www.franprix.fr"
+    },
+    "Sephora": {
+        "twitter": "Sephora",
+        "url": "http://www.sephora.fr"
     }
 }
