@@ -126,7 +126,7 @@
         }
 
         var hrefMaps = 'https://maps.google.com/maps?q=' +
-            encodeURIComponent($('h4 a.venue').html()) + ' ' +
+            encodeURIComponent($('h4 a:first').html()) + ' ' +
             encodeURIComponent(address);
 
         var searchMaps = '<a target="_blank" href="' + hrefMaps + '">Google Maps</a>';
