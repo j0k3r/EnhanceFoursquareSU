@@ -1,25 +1,4 @@
 {
-    "_names": [
-        "Décathlon",
-        "McDonald's",
-        "Gare SNCF",
-        "Subway",
-        "Buffalo Grill",
-        "Carrefour",
-        "Monop",
-        "KFC",
-        "Etam",
-        "Norauto",
-        "Flunch",
-        "Simply Market",
-        "Domino",
-        "Fnac",
-        "Vélib",
-        "Brioche Dorée",
-        "Franprix",
-        "Sephora",
-        "BNP Paribas"
-    ],
     "Décathlon": {
         "twitter": "decathlonfrance",
         "url": "http://www.decathlon.fr"
