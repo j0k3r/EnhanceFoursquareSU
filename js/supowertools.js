@@ -16,6 +16,17 @@
         'home_recategorize': 'a home',
     };
 
+    // value that won't be shown as empty in /edit part
+    // we use only key for fastest search (using hasOwnProperty)
+    var excludeEmptyValues = {
+        'crossStreet': '',
+        'twitter': '',
+        'url': ''
+    };
+
+    // threshold to make empty value bolder for a better look
+    var thresholdAlertEmptyValues = 6 - Object.keys(excludeEmptyValues).length;
+
     // global Foursquare Object
     var foursquareNotifier,
         foursquareApiVenue,
@@ -178,16 +189,19 @@
      */
     function displayEmptyValue() {
         // if edit panel doesn't exists or enhancement already exists
-        if (!$('div.editPanes div.editPane').html() || $('#su-powertools-edit-location').html()) {
+        var editPanel = $('div.editPanes div.editPane');
+        if (!editPanel.html() || $('#su-powertools-edit-location').html()) {
             return;
         }
 
         // loop through all value from the edit panel and find those with empty value
         var emptyValues = [];
         var curItem = '';
-        $('li.field.simpleField :input').each(function () {
+        editPanel.find('li.field.simpleField :input').each(function () {
             curItem = $(this);
-            if ('' === curItem.val()) {
+
+            // exclude unwanted empty value
+            if ('' === curItem.val() && !excludeEmptyValues.hasOwnProperty(curItem.parents('li.field').first().data('key'))) {
                 emptyValues.push(curItem.parent().prev('div').html());
             }
         });
@@ -199,7 +213,7 @@
         var text = '<span id="su-powertools-edit-location"><b>' + emptyValues.length + '</b> empty fields: ' + emptyValues.join(', ') + '</span>';
 
         // display a more visible message if there is a lot of empty fields
-        if (6 < emptyValues.length) {
+        if (thresholdAlertEmptyValues < emptyValues.length) {
             text = '<span id="su-powertools-edit-location"><b>' + emptyValues.length + ' empty fields !</b></span>';
         }
 
