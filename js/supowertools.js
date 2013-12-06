@@ -21,7 +21,7 @@
         foursquareApiVenue,
         foursquareStorage;
 
-    var flagInfos = { comment: 'Marked via SU PowerTools' };
+    var flagInfos = { comment: 'Marked via SU Power Tools' };
 
     /**
      * convert "Centre Commercial" in "C.C"

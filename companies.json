@@ -74,5 +74,13 @@
     "Sephora": {
         "twitter": "Sephora",
         "url": "http://www.sephora.fr"
+    },
+    "Paul": {
+        "twitter": "PAUL__France",
+        "url": "http://www.paul.fr"
+    },
+    "Picard": {
+        "twitter": "picardsurgeles",
+        "url": "http://www.picard.fr/"
     }
 }
