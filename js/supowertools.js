@@ -1,25 +1,25 @@
 (function () {
     "use strict";
     // var gmapsApi = 'http://maps.kimtrip.net';
-    var gmapsApi = '//maps.googleapis.com/maps/api/geocode/json';
-    var jsonCompanies = '//rawgithub.com/j0k3r/SUPowerTools/master/companies.json';
-    var oldAddressValues = {};
-    var companies = [];
+    var gmapsApi = '//maps.googleapis.com/maps/api/geocode/json',
+        jsonCompanies = '//rawgithub.com/j0k3r/SUPowerTools/master/companies.json',
+        oldAddressValues = {},
+        companies = [];
 
     // full list: home_remove|home_recategorize|home_claim|not_closed|un_delete|public|private|undelete|doesnt_exist|event_over|inappropriate|duplicate|closed|mislocated
     var flagReasons = {
-        mislocated: 'mislocated',
-        closed: 'closed',
-        inappropriate: 'offensive or inappropriate',
-        doesnt_exist: "doesn't exist",
-        event_over: 'an event that has ended',
-        home_recategorize: 'a home',
+        'mislocated': 'mislocated',
+        'closed': 'closed',
+        'inappropriate': 'offensive or inappropriate',
+        'doesnt_exist': "doesn't exist",
+        'event_over': 'an event that has ended',
+        'home_recategorize': 'a home',
     };
 
     // global Foursquare Object
-    var _foursquareNotifier;
-    var _foursquareApiVenue;
-    var _foursquareStorage;
+    var foursquareNotifier,
+        foursquareApiVenue,
+        foursquareStorage;
 
     var flagInfos = { comment: 'Marked via SU PowerTools' };
 
@@ -50,24 +50,24 @@
     /**
      * Some initilizations at first
      */
-    function initialize () {
+    function initialize() {
         // initialize the Foursquare notifier
-        if (typeof _foursquareNotifier === "undefined") {
-            _foursquareNotifier = fourSq.ui.Notifier.getInstance();
+        if (typeof foursquareNotifier === "undefined") {
+            foursquareNotifier = fourSq.ui.Notifier.getInstance();
         }
 
         // initialize the Foursquare Venue API
-        if (typeof _foursquareApiVenue === "undefined") {
-            _foursquareApiVenue = fourSq.api.services.Venue;
+        if (typeof foursquareApiVenue === "undefined") {
+            foursquareApiVenue = fourSq.api.services.Venue;
         }
 
         // initialize the Foursquare local storage
-        if (typeof _foursquareStorage === "undefined") {
-            _foursquareStorage = fourSq.util.localStorage;
+        if (typeof foursquareStorage === "undefined") {
+            foursquareStorage = fourSq.util.localStorage;
         }
 
         // load companies
-        $.getJSON(jsonCompanies, function(data) {
+        $.getJSON(jsonCompanies, function (data) {
             companies = data;
         });
     }
@@ -79,14 +79,14 @@
      *
      * @return true         To indicate the field has been updated
      */
-    function updateFields (element, value) {
+    function updateFields(element, value) {
         element.val(value).change();
         element.css('color', 'limegreen');
 
         return true;
     }
 
-    function initializeEnhanceBlock () {
+    function initializeEnhanceBlock() {
         // avoid duplicate enhancement
         if ($('#su-powertools-block').html()) {
             return;
@@ -102,7 +102,7 @@
      * - Add a link to Google Maps
      * - Move both link above the venue name
      */
-    function enhanceSearch () {
+    function enhanceSearch() {
         var searchLink = $('div.venueInfoText a.searchLink');
 
         // avoid duplicate enhancement
@@ -116,13 +116,13 @@
             .attr('href')
             .replace('bing.com', 'google.com/search');
 
-        var searchGoogle = '<a target="_blank" href="'+hrefGoogle+'">Google</a>';
+        var searchGoogle = '<a target="_blank" href="' + hrefGoogle + '">Google</a>';
 
         // remove crossStreet from address to get more accurate results
         var address = $('div.venueInfoText p.addressArea').html();
         var crossStreet = $('li.field.simpleField[data-key="crossStreet"] input').val();
         if ('' !== crossStreet) {
-            address = address.replace(' ('+crossStreet+')', '');
+            address = address.replace(' (' + crossStreet + ')', '');
         }
 
         var hrefMaps = 'https://maps.google.com/maps?q=' +
@@ -140,14 +140,14 @@
             if (!venueUrl.length) {
                 $('div.venueInfoText').append('<p class="venueUrl"></p>');
             }
-            $('div.venueInfoText p.venueUrl').append(' - <a class="url" href="http://twitter.com/'+twitter+'" target="_blank">@'+twitter+'</a>');
+            $('div.venueInfoText p.venueUrl').append(' - <a class="url" href="http://twitter.com/' + twitter + '" target="_blank">@' + twitter + '</a>');
         }
     }
 
     /**
      * Add search links to Google & Google Maps in the "suggest edit" panel
      */
-    function enhanceSearchSuggestEdit () {
+    function enhanceSearchSuggestEdit() {
         // avoid duplicate enhancement
         if ($('#su-powertools-auto-address').html()) {
             return;
@@ -156,17 +156,17 @@
         $('<div class="suggest-edit" id="su-powertools-auto-address"></div>').insertAfter('input.formStyle.venueNameInput.flagEditInput');
 
         // add Google link
-        var hrefGoogle = 'https://www.google.com/search?q='+
-            encodeURIComponent($('input.formStyle.venueNameInput.flagEditInput').val())+' '+
+        var hrefGoogle = 'https://www.google.com/search?q=' +
+            encodeURIComponent($('input.formStyle.venueNameInput.flagEditInput').val()) + ' ' +
             encodeURIComponent($('input.formStyle.flagEditInput.city').val());
 
-        $('#su-powertools-auto-address').append('Search on: <a target="_blank" href="'+hrefGoogle+'">Google</a>');
+        $('#su-powertools-auto-address').append('Search on: <a target="_blank" href="' + hrefGoogle + '">Google</a>');
 
         // add Google Maps link
-        var hrefMaps = 'https://maps.google.com/maps?q='+
+        var hrefMaps = 'https://maps.google.com/maps?q=' +
             encodeURIComponent($('div.accordianHeader.expandable div.headerVenueText').html());
 
-        $('#su-powertools-auto-address').append(' - <a target="_blank" href="'+hrefMaps+'">Google Maps</a>');
+        $('#su-powertools-auto-address').append(' - <a target="_blank" href="' + hrefMaps + '">Google Maps</a>');
     }
 
     /**
@@ -176,7 +176,7 @@
      * - Parse all empty value from edit panel and display them above the venue name
      *   If there are more than 6 empty values, we don't list them
      */
-    function displayEmptyValue () {
+    function displayEmptyValue() {
         // if edit panel doesn't exists or enhancement already exists
         if (!$('div.editPanes div.editPane').html() || $('#su-powertools-edit-location').html()) {
             return;
@@ -185,7 +185,7 @@
         // loop through all value from the edit panel and find those with empty value
         var emptyValues = [];
         var curItem = '';
-        $('li.field.simpleField :input').each(function() {
+        $('li.field.simpleField :input').each(function () {
             curItem = $(this);
             if ('' === curItem.val()) {
                 emptyValues.push(curItem.parent().prev('div').html());
@@ -212,7 +212,7 @@
      *
      * @todo : remove flag from localStorage
      */
-    function displayFlagOptions () {
+    function displayFlagOptions() {
         var editPane = $('div.editPanes div.editPane');
 
         // if edit panel doesn't exists or enhancement already exists
@@ -222,22 +222,22 @@
 
         // check if current venue has already been flagged
         var storageKey = 'SPT-flag-'+editPane.data('venueid');
-        if (true === _foursquareStorage.exists(storageKey)) {
+        if (true === foursquareStorage.exists(storageKey)) {
             // @todo: check if the flag is gone
 
-            $('#su-powertools-block').append('<span id="su-powertools-flag-options"><strong>Already flagged as: '+flagReasons[_foursquareStorage.get(storageKey)]+'</strong></span>');
+            $('#su-powertools-block').append('<span id="su-powertools-flag-options"><strong>Already flagged as: ' + flagReasons[foursquareStorage.get(storageKey)] + '</strong></span>');
 
             return;
         }
 
         // build dropdown options
         var select = '<select><option>(none)</option>';
-        $.each(flagReasons, function(key, value) {
-            select += '<option value="'+key+'">'+value+'</option>';
+        $.each(flagReasons, function (key, value) {
+            select += '<option value="' + key + '">' + value + '</option>';
         });
         select += '</select>';
 
-        $('#su-powertools-block').append('<span id="su-powertools-flag-options">Flag as: '+select+'</span>');
+        $('#su-powertools-block').append('<span id="su-powertools-flag-options">Flag as: ' + select + '</span>');
 
         $('#su-powertools-flag-options select').change(function selectFlag() {
             var problem = $(this).val();
@@ -246,7 +246,7 @@
                 return;
             }
 
-            if (false === confirm('Do you want to flag this venue with problem: "'+problem+'"')) {
+            if (false === confirm('Do you want to flag this venue with problem: "' + problem + '"')) {
                 // re-select the "(none)" option
                 $(this).children('option').first().prop('selected', true);
                 return;
@@ -255,19 +255,19 @@
             flagInfos.problem = problem;
 
             // do flag venue
-            _foursquareApiVenue.flag(
+            foursquareApiVenue.flag(
                 editPane.data('venueid'),
                 flagInfos,
-                function handleSuccess (response, dataSuccess) {
+                function handleSuccess() {
                     // store new flag for this venue
-                    _foursquareStorage.set(storageKey, problem);
+                    foursquareStorage.set(storageKey, problem);
 
-                    _foursquareNotifier.info('Venue reported as "'+flagReasons[problem]+'".');
+                    foursquareNotifier.info('Venue reported as "' + flagReasons[problem] + '".');
 
-                    $('#su-powertools-flag-options').html('Flagged as: <strong>'+flagReasons[problem]+'</strong> !');
+                    $('#su-powertools-flag-options').html('Flagged as: <strong>' + flagReasons[problem] + '</strong> !');
                 },
-                function handleError (response, dataError) {
-                    _foursquareNotifier.error('Error: '+response.response.meta.errorDetail);
+                function handleError (response) {
+                    foursquareNotifier.error('Error: ' + response.response.meta.errorDetail);
                 }
             );
         });
@@ -278,11 +278,11 @@
      * to automatically update address fields (address, state, zip & city) using Google Maps
      * It's displayed only when we have an address in the form.
      */
-    function displayFixAddress () {
+    function displayFixAddress() {
         var editPane = $('div.editPanes div.editPane');
 
         // if edit panel doesn't exists or enhancement already exists
-        if (!editPane.html() || $('#su-powertools-auto-address a.fix-address').html() || !_foursquareStorage.exists('SPT-gmap-key')) {
+        if (!editPane.html() || $('#su-powertools-auto-address a.fix-address').html() || !foursquareStorage.exists('SPT-gmap-key')) {
             return;
         }
 
@@ -304,13 +304,13 @@
 
         // if there is no address, we request the foursquare api to get lat/long values
         if (editPane.html() && (addressFields.address && '' === addressFields.address.val())) {
-            _foursquareApiVenue.detail(
+            foursquareApiVenue.detail(
                 editPane.data('venueid'),
                 function (venue) {
                     doBindFixAddress(
                         addressFields,
                         'div.editPanes div.editPane h3',
-                        venue.location.lat+','+venue.location.lng
+                        venue.location.lat + ',' + venue.location.lng
                     );
                 }
             );
@@ -326,7 +326,7 @@
      * @param  string   insertMessageAfter  @see setAddressFromGoogle
      * @param  string   latlong             If defined, it will be used instead of address/city
      */
-    function doBindFixAddress (addressFields, insertMessageAfter, latlong) {
+    function doBindFixAddress(addressFields, insertMessageAfter, latlong) {
         $('#su-powertools-auto-address a.fix-address').bind('click', function updateAddress() {
             var addressSearchQuery = addressFields.address.val();
             var city = addressFields.city.val();
@@ -355,15 +355,15 @@
      * to automatically update address fields (address, state, zip & city) using Google Maps
      * It can use latitude/longitude if no address are defined
      */
-    function displayFixAddressSuggestEdit () {
+    function displayFixAddressSuggestEdit() {
         // if edit panel doesn't exists or enhancement link already exists
-        if (!$('div.modalLoadingContainer div.inputArea').html() || $('#su-powertools-auto-address a.fix-address').html() || !_foursquareStorage.exists('SPT-gmap-key')) {
+        if (!$('div.modalLoadingContainer div.inputArea').html() || $('#su-powertools-auto-address a.fix-address').html() || !foursquareStorage.exists('SPT-gmap-key')) {
             return;
         }
 
         // if there is no address, we won't try to improve it automatically
-        var address = $('input.formStyle.flagEditInput.address');
-        var latlong = $('input.formStyle.flagEditInput.ll');
+        var address = $('input.formStyle.flagEditInput.address'),
+            latlong = $('input.formStyle.flagEditInput.ll');
         if ('' === address.val() && '' === latlong.val()) {
             return;
         }
@@ -389,7 +389,7 @@
      *
      * @param  object addressFields
      */
-    function bindAddressRollBack (addressFields) {
+    function bindAddressRollBack(addressFields) {
         // once the rollback is display, we won't reload it
         if ($('#su-powertools-auto-address-rollback').html()) {
             return;
@@ -438,7 +438,7 @@
     /**
      * It actually DO the rollback only
      */
-    function doAddressRollback (element, addressFields) {
+    function doAddressRollback(element, addressFields) {
         // clean message since we rollback
         $('.su-powertools-message-error').remove();
         $('.su-powertools-message-warning').remove();
@@ -478,7 +478,7 @@
      * @param  object  addressFormFields    Fields from the form
      * @param  element loadingImg           Element to show/hide for interactivity
      */
-    function setAddressFromGoogle (address, city, addressFormFields, loadingImg, insertMessageAfter) {
+    function setAddressFromGoogle(address, city, addressFormFields, loadingImg, insertMessageAfter) {
         $('.su-powertools-message-error').remove();
         $('.su-powertools-message-warning').remove();
 
@@ -513,22 +513,22 @@
             url: gmapsApi,
             data: dataUrl,
             dataType: "json",
-            success: function (data, textStatus, jqXHR) {
+            success: function (data) {
                 if (data.status !== "OK") {
                     loadingImg.hide();
-                    _foursquareNotifier.info('Google did not find a matching address: '+data.status);
+                    foursquareNotifier.info('Google did not find a matching address: ' + data.status);
                     return;
                 }
 
-                var gRoute = "";
-                var gStreeNumber = "";
-                var gLocality = "";
-                var gPostalTown = "";
-                var gAreaLvl1 = "";
-                var gAreaLvl1Short = "";
-                var gAreaLvl2 = "";
-                var gZip = "";
-                var gCountry = "";
+                var gRoute = "",
+                    gStreeNumber = "",
+                    gLocality = "",
+                    gPostalTown = "",
+                    gAreaLvl1 = "",
+                    gAreaLvl1Short = "",
+                    gAreaLvl2 = "",
+                    gZip = "",
+                    gCountry = "";
 
                 // empty result ? Do nothing.
                 if (data.results.length <= 0) {
@@ -644,7 +644,7 @@
                     }
 
                     // try to update known company: twitter & url
-                    $.map(companies, function(element, index) {
+                    $.map(companies, function (element, index) {
                         var regexCompany = new RegExp(index, "gi");
                         if (regexCompany.exec(addressFormFields.name.val())) {
                             var companyFound = companies[index];
@@ -659,7 +659,7 @@
 
                             return;
                         }
-                    })
+                    });
                 }
 
                 loadingImg.hide();
@@ -672,9 +672,9 @@
                         $(insertMessageAfter).append('<span class="su-powertools-message-warning">The result may be inaccurate, please check the data.</span>');
                     }
 
-                    _foursquareNotifier.info('Address updated !');
+                    foursquareNotifier.info('Address updated !');
                 } else {
-                    _foursquareNotifier.info('Nothing to update');
+                    foursquareNotifier.info('Nothing to update');
                 }
             },
             statusCode: {
@@ -699,7 +699,7 @@
     }
 
     // be sure that every new venue will be updated
-    setInterval(function() {
+    setInterval(function () {
         initializeEnhanceBlock();
         enhanceSearch();
         displayEmptyValue();
@@ -717,15 +717,15 @@
      */
     if ('/edit/' === window.location.pathname) {
         // Options to set the Google Maps API key - REQUIRED :)
-        if (!_foursquareStorage.exists('SPT-gmap-key')) {
-            var optionsHtml = ''+
-                '<div id="su-powertools-options">'+
-                    '<h2>Thanks for installing SU PowerTools !</h2>'+
+        if (!foursquareStorage.exists('SPT-gmap-key')) {
+            var optionsHtml = '' +
+                '<div id="su-powertools-options">' +
+                    '<h2>Thanks for installing SU PowerTools !</h2>' +
                     "<p><em>This message won't appear anymore after this step is completed.</em></p>"+
                     "<p>In order to use the Google Maps API to automatically fix address you will need to provide a Google Maps API key. Don't worry, if you already have a Google Account, it will be a very easy step.</p>"+
-                    '<p>Everything is clearly explain <a href="https://developers.google.com/maps/documentation/javascript/tutorial#api_key" target="_blank">here</a>. Once you have your key, just past it in the input below. </p>'+
-                    '<input type="text" id="gmaps_api_key">'+
-                    '<button id="save">Save</button>'+
+                    '<p>Everything is clearly explain <a href="https://developers.google.com/maps/documentation/javascript/tutorial#api_key" target="_blank">here</a>. Once you have your key, just past it in the input below. </p>' +
+                    '<input type="text" id="gmaps_api_key">' +
+                    '<button id="save">Save</button>' +
                 '</div>';
 
             $('#container').prepend(optionsHtml);
@@ -740,19 +740,19 @@
                     return false;
                 }
 
-                _foursquareStorage.set('SPT-gmap-key', $('input#gmaps_api_key').val());
+                foursquareStorage.set('SPT-gmap-key', $('input#gmaps_api_key').val());
                 $('#su-powertools-options').hide();
-                _foursquareNotifier.info('Perfect ! You Google Maps API key is now saved. You can fully enjoy SU Power Tools !');
+                foursquareNotifier.info('Perfect ! You Google Maps API key is now saved. You can fully enjoy SU Power Tools !');
             });
         }
 
         fourSq.api.services.User.flagStats(
             window.fourSq.config.user.USER_PROFILE.id,
-            function handleSuccess(response, dataSuccess) {
-                var processed = 0;
-                var proposed = 0;
-                var processedApproved = 0;
-                var proposedApproved = 0;
+            function handleSuccess(response) {
+                var processed = 0,
+                    proposed = 0,
+                    processedApproved = 0,
+                    proposedApproved = 0;
 
                 for (var i = response.stats.length - 1; i >= 0; i--) {
                     processed += response.stats[i].processed;
@@ -765,19 +765,19 @@
 
                 var allStatsList = $('#su-powertools-stats ul.queueLinks');
 
-                var tpl = ''+
-                '<li class="queueLinkItem">'+
-                    '<a href="#" class="queueLink">'+
-                        '<h3>%title%</h3>'+
-                        '<div class="userInfo">'+
-                            '<span class="userStats">'+
-                                '<span class="approvedCount">%approvedCount%</span> / <span class="suggestedCount">%suggestedCount%</span>'+
-                            '</span>'+
-                            '<span class="pendingIndicator">'+
-                                '<span class="pendingCount">%percentage%%</span>'+
-                            '</span>'+
-                        '</div>'+
-                    '</a>'+
+                var tpl = '' +
+                '<li class="queueLinkItem">' +
+                    '<a href="#" class="queueLink">' +
+                        '<h3>%title%</h3>' +
+                        '<div class="userInfo">' +
+                            '<span class="userStats">' +
+                                '<span class="approvedCount">%approvedCount%</span> / <span class="suggestedCount">%suggestedCount%</span>' +
+                            '</span>' +
+                            '<span class="pendingIndicator">' +
+                                '<span class="pendingCount">%percentage%%</span>' +
+                            '</span>' +
+                        '</div>' +
+                    '</a>' +
                 '</li>';
 
                 // append overall stats
@@ -840,8 +840,8 @@
                     allStatsList.append(statTpl);
                 }
             },
-            function handleError(response, dataError) {
-                _foursquareNotifier.error('Error: '+response.response.meta.errorDetail);
+            function handleError(response) {
+                foursquareNotifier.error('Error: ' + response.response.meta.errorDetail);
             }
         );
     }
