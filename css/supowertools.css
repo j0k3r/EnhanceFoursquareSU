@@ -50,3 +50,7 @@ div#su-powertools-stats.queueWrapper ul li .userInfo .userStats {
 #gmaps_api_key {
     width: 260px;
 }
+
+#su-powertools-woesets {
+    text-align: right;
+}

@@ -712,6 +712,50 @@
         });
     }
 
+    /**
+     * Display a link "Tick all suggested detail" (in /edit/details) to mark all suggested detail to valid
+     * Then, it will flip to be able to untick all suggested detail
+     */
+    function displaySelectAllWoe() {
+        var woeSets = $('ul.woeSets');
+
+        // avoid duplicate enhancement
+        if ($('#su-powertools-woesets').html() || !woeSets.html()) {
+            return;
+        }
+
+        woeSets.prepend('<p id="su-powertools-woesets"><a href="#" class="tick">Tick all suggested details</a></p>');
+
+        $('#su-powertools-woesets a').bind('click', function tickAllDetails() {
+            var link = $(this);
+
+            if (link.hasClass('tick')) {
+                $('li.woe.unselected').each(function () {
+                    $(this)
+                        .removeClass('unselected')
+                        .addClass('selected');
+                });
+
+                link.html('Untick all suggested details')
+                    .removeClass('tick')
+                    .addClass('untick');
+            } else {
+                $('li.woe.selected').each(function () {
+                    $(this)
+                        .removeClass('selected')
+                        .addClass('unselected');
+                });
+
+                link.html('Tick all suggested details')
+                    .removeClass('untick')
+                    .addClass('tick');
+            }
+
+            // it's coming from a link, so we cancel the href '#'
+            return false;
+        });
+    }
+
     // be sure that every new venue will be updated
     setInterval(function () {
         initializeEnhanceBlock();
@@ -721,6 +765,7 @@
         displayFixAddress();
         enhanceSearchSuggestEdit();
         displayFixAddressSuggestEdit();
+        displaySelectAllWoe();
     }, 500);
 
     initialize();

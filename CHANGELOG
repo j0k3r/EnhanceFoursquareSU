@@ -9,6 +9,7 @@
  - Ability to flag a venue in /edit
  - Update company infos (twitter & url) from a defined list (companies.json)
  - Add a required option to set the Google Maps API key
+ - Add a link to "Tick all suggested detail"
 
 ## v0.2 (26/10/13)
 
