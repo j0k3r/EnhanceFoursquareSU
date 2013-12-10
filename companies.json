@@ -81,6 +81,10 @@
     },
     "Picard": {
         "twitter": "picardsurgeles",
-        "url": "http://www.picard.fr/"
+        "url": "http://www.picard.fr"
+    },
+    "Darty": {
+        "twitter": "Darty_Officiel",
+        "url": "http://www.darty.com/"
     }
 }
