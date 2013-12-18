@@ -85,6 +85,10 @@
     },
     "Darty": {
         "twitter": "Darty_Officiel",
-        "url": "http://www.darty.com/"
+        "url": "http://www.darty.com"
+    },
+    "Castorama": {
+        "twitter": "castorama_fr",
+        "url": "http://www.castorama.fr"
     }
 }
