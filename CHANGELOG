@@ -10,6 +10,7 @@
  - Update company infos (twitter & url) from a defined list (companies.json)
  - Add a required option to set the Google Maps API key
  - Add a link to "Tick all suggested detail"
+ - Handle the new "location" instead of city/province
 
 ## v0.2 (26/10/13)
 

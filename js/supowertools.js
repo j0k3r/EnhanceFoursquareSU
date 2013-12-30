@@ -169,7 +169,7 @@
         // add Google link
         var hrefGoogle = 'https://www.google.com/search?q=' +
             encodeURIComponent($('input.formStyle.venueNameInput.flagEditInput').val()) + ' ' +
-            encodeURIComponent($('input.formStyle.flagEditInput.city').val());
+            encodeURIComponent($('input.formStyle.flagEditInput.location').val());
 
         $('#su-powertools-auto-address').append('Search on: <a target="_blank" href="' + hrefGoogle + '">Google</a>');
 
@@ -316,21 +316,26 @@
             url: $('li.field.simpleField[data-key="url"] input')
         };
 
-        // if there is no address, we request the foursquare api to get lat/long values
-        if (editPane.html() && (addressFields.address && '' === addressFields.address.val())) {
-            foursquareApiVenue.detail(
-                editPane.data('venueid'),
-                function (venue) {
-                    doBindFixAddress(
-                        addressFields,
-                        'div.editPanes div.editPane h3',
-                        venue.location.lat + ',' + venue.location.lng
-                    );
-                }
-            );
-        } else {
-            doBindFixAddress(addressFields, 'div.editPanes div.editPane h3', '');
-        }
+        // request the foursquare api to get lat/long values in any case
+        foursquareApiVenue.detail(
+            editPane.data('venueid'),
+            function (venue) {
+                doBindFixAddress(
+                    addressFields,
+                    'div.editPanes div.editPane h3',
+                    '',
+                    function calcQuery (addressFields) {
+                        // attach address to city
+                        if (addressFields.city.val() && addressFields.address.val()) {
+                            return addressFields.address.val() + ' ' + addressFields.city.val();
+                        }
+
+                        // use lat & long if it is given and the address field is empty
+                        return venue.location.lat + ',' + venue.location.lng;
+                    }
+                );
+            }
+        );
     }
 
     /**
@@ -338,22 +343,13 @@
      *
      * @param  object   addressFields
      * @param  string   insertMessageAfter  @see setAddressFromGoogle
-     * @param  string   latlong             If defined, it will be used instead of address/city
+     * @param  string   latlong             Lat & long
+     * @param  function queryCallBack       Callback to generate the query
      */
-    function doBindFixAddress(addressFields, insertMessageAfter, latlong) {
+    function doBindFixAddress(addressFields, insertMessageAfter, latlong, queryCallBack) {
         $('#su-powertools-auto-address a.fix-address').bind('click', function updateAddress() {
-            var addressSearchQuery = addressFields.address.val();
-            var city = addressFields.city.val();
-
-            // use lat & long if it is given and the address field is empty
-            if ('' === addressSearchQuery && '' !== latlong) {
-                addressSearchQuery = latlong;
-                city = '';
-            }
-
             setAddressFromGoogle(
-                addressSearchQuery,
-                city,
+                queryCallBack(addressFields, latlong),
                 addressFields,
                 $(this).next('img'),
                 insertMessageAfter
@@ -390,12 +386,26 @@
             state: $('input.formStyle.flagEditInput.state'),
             zip: $('input.formStyle.flagEditInput.zip'),
             city: $('input.formStyle.flagEditInput.city'),
+            location: $('input.formStyle.flagEditInput.location'),
             twitter: $('input.formStyle.flagEditInput.twitter'),
             url: $('input.formStyle.flagEditInput.url')
         };
 
         // bind link
-        doBindFixAddress(addressFields, '#su-powertools-auto-address', latlong.val());
+        doBindFixAddress(
+            addressFields,
+            '#su-powertools-auto-address',
+            latlong,
+            function calcSuggestQuery (addressFields, latlong) {
+                // attach address to location
+                if (addressFields.location.val() && addressFields.address.val()) {
+                    return addressFields.address.val() + ' ' + addressFields.location.val();
+                }
+
+                // use lat & long if it is given and the address field is empty
+                return latlong.val();
+            }
+        );
     }
 
     /**
@@ -472,6 +482,12 @@
         addressFields.city.val(oldAddressValues.city);
         addressFields.city.css('color', '#4d4d4d');
 
+        // handle location field on suggest edit
+        if (typeof oldAddressValues.location !== "undefined") {
+            addressFields.location.val(oldAddressValues.location);
+            addressFields.location.css('color', '#4d4d4d');
+        }
+
         addressFields.twitter.val(oldAddressValues.twitter);
         addressFields.twitter.css('color', '#4d4d4d');
 
@@ -487,12 +503,11 @@
     /**
      * Took an address and (optionnaly) a city and update form address with Google results
      *
-     * @param  string  address
-     * @param  string  city
+     * @param  string  query
      * @param  object  addressFormFields    Fields from the form
      * @param  element loadingImg           Element to show/hide for interactivity
      */
-    function setAddressFromGoogle(address, city, addressFormFields, loadingImg, insertMessageAfter) {
+    function setAddressFromGoogle(query, addressFormFields, loadingImg, insertMessageAfter) {
         $('.su-powertools-message-error').remove();
         $('.su-powertools-message-warning').remove();
 
@@ -509,18 +524,17 @@
                 twitter: addressFormFields.twitter.val(),
                 url: addressFormFields.url.val()
             };
+
+            if (typeof addressFormFields.location !== "undefined") {
+                oldAddressValues.location = addressFormFields.location.val();
+            }
         }
 
         // will be set to true if one element of the address is updated
         // it will allow us to add a rollback link in that case
         var addressUpdated = false;
 
-        // don't add city if it's not provided
-        // could make bad result if it's combined with lat/long
-        var dataUrl = "sensor=false&address=" + encodeURIComponent(address);
-        if ('' !== city) {
-            dataUrl += "," + encodeURIComponent(city);
-        }
+        var dataUrl = "sensor=false&address=" + encodeURIComponent(query);
 
         $.ajax({
             type: "GET",
@@ -648,6 +662,11 @@
                     if (gLocality !== addressFormFields.city.val()) {
                         addressUpdated = updateFields(addressFormFields.city, gLocality);
                     }
+                }
+
+                // update location on suggest edit
+                if (typeof addressFormFields.location !== "undefined") {
+                    addressUpdated = updateFields(addressFormFields.location, gLocality);
                 }
 
                 if (addressFormFields.name.val()) {
