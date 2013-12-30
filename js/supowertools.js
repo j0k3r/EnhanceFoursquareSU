@@ -798,9 +798,9 @@
         if (!foursquareStorage.exists('SPT-gmap-key')) {
             var optionsHtml = '' +
                 '<div id="su-powertools-options">' +
-                    '<h2>Thanks for installing SU PowerTools !</h2>' +
+                    '<h2>Thanks for installing SU Power Tools !</h2>' +
                     "<p><em>This message won't appear anymore after this step is completed.</em></p>"+
-                    "<p>In order to use the Google Maps API to automatically fix address you will need to provide a Google Maps API key. Don't worry, if you already have a Google Account, it will be a very easy step.</p>"+
+                    "<p>In order to use the Google Maps API to automatically fix address you need to provide a Google Maps API key. Don't worry, if you already have a Google Account, it will be a very easy step.</p>"+
                     '<p>Everything is clearly explain <a href="https://developers.google.com/maps/documentation/javascript/tutorial#api_key" target="_blank">here</a>. Once you have your key, just past it in the input below. </p>' +
                     '<input type="text" id="gmaps_api_key">' +
                     '<button id="save">Save</button>' +
@@ -820,7 +820,7 @@
 
                 foursquareStorage.set('SPT-gmap-key', $('input#gmaps_api_key').val());
                 $('#su-powertools-options').hide();
-                foursquareNotifier.info('Perfect ! You Google Maps API key is now saved. You can fully enjoy SU Power Tools !');
+                foursquareNotifier.info('Perfect ! Your Google Maps API key is now saved. Enjoy SU Power Tools :)');
             });
         }
 
