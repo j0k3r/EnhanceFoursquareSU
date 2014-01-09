@@ -791,9 +791,10 @@
 
     /**
      * Check that we are on the dashboard
+     * (be sure to check if user is on /edit and /edit/)
      * If so we add a user stats for all proposed suggestions / approved
      */
-    if ('/edit/' === window.location.pathname) {
+    if (null !== window.location.pathname.match(/^\/edit\/?$/)) {
         // Options to set the Google Maps API key - REQUIRED :)
         if (!foursquareStorage.exists('SPT-gmap-key')) {
             var optionsHtml = '' +
