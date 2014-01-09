@@ -21,8 +21,8 @@
     "content_scripts": [
         {
             "matches": [
-                "*://foursquare.com/edit/*",
-                "*://*.foursquare.com/edit/*",
+                "*://foursquare.com/edit*",
+                "*://*.foursquare.com/edit*",
                 "*://*.foursquare.com/v/*",
                 "*://foursquare.com/v/*"
             ],
