@@ -90,5 +90,13 @@
     "Castorama": {
         "twitter": "castorama_fr",
         "url": "http://www.castorama.fr"
+    },
+    "Go Sport": {
+        "twitter": "gosportlive",
+        "url": "http://www.go-sport.com"
+    },
+    "Conforama": {
+        "twitter": "conforama",
+        "url": "http://www.conforama.fr"
     }
 }
