@@ -378,6 +378,11 @@
             return;
         }
 
+        var cityAutocomplete = $('div.flagVenueInfo.cityAutocomplete');
+        if (cityAutocomplete) {
+            cityAutocomplete.addClass('manualLocationOverride');
+        }
+
         $('#su-powertools-auto-address').append('<br/>Or <a class="fix-address" href="#">fix the address</a> <img style="display: none" src="//i.imgur.com/Srmlo6N.gif" />');
 
         var addressFields = {
