@@ -98,5 +98,17 @@
     "Conforama": {
         "twitter": "conforama",
         "url": "http://www.conforama.fr"
+    },
+    "Marionnaud": {
+        "twitter": "Marionnaud_Fr",
+        "url": "http://www.marionnaud.fr"
+    },
+    "Micromania": {
+        "twitter": "Micromania_Fr",
+        "url": "http://www.micromania.fr"
+    },
+    "La Pataterie": {
+        "twitter": "La_Pataterie",
+        "url": "http://www.lapataterie.fr"
     }
 }
