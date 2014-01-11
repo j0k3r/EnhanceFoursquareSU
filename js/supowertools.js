@@ -737,7 +737,10 @@
     }
 
     /**
-     * Display a link "Tick all suggested detail" (in /edit/details) to mark all suggested detail to valid
+     * Display links:
+     *     - "Tick all suggested detail" (in /edit/details) to mark all suggested detail to valid
+     *     - "Does no apply for all" (in /edit/details) to deny all suggested detail
+     *
      * Then, it will flip to be able to untick all suggested detail
      */
     function displaySelectAllWoe() {
@@ -748,9 +751,9 @@
             return;
         }
 
-        woeSets.prepend('<p id="su-powertools-woesets"><a href="#" class="tick">Tick all suggested details</a></p>');
+        woeSets.prepend('<p id="su-powertools-woesets"><a href="#" class="noapply">Does no apply for all</a> - <a href="#" class="tick">Tick all suggested details</a></p>');
 
-        $('#su-powertools-woesets a').bind('click', function tickAllDetails() {
+        $('#su-powertools-woesets a.tick').bind('click', function tickAllDetails() {
             var link = $(this);
 
             if (link.hasClass('tick')) {
@@ -773,6 +776,37 @@
                 link.html('Tick all suggested details')
                     .removeClass('untick')
                     .addClass('tick');
+            }
+
+            // it's coming from a link, so we cancel the href '#'
+            return false;
+        });
+
+        $('#su-powertools-woesets a.noapply').bind('click', function tickAllDetails() {
+            var link = $(this);
+
+            if (link.hasClass('noapply')) {
+                $('li.suggestions.unselected').each(function () {
+                    $(this)
+                        .removeClass('unselected')
+                        .addClass('suggestNAEnabled')
+                        .addClass('selected');
+                });
+
+                link.html('Apply for all')
+                    .removeClass('noapply')
+                    .addClass('apply');
+            } else {
+                $('li.suggestions.selected').each(function () {
+                    $(this)
+                        .removeClass('selected')
+                        .removeClass('suggestNAEnabled')
+                        .addClass('unselected');
+                });
+
+                link.html('Does no apply for all')
+                    .removeClass('apply')
+                    .addClass('noapply');
             }
 
             // it's coming from a link, so we cancel the href '#'
