@@ -1,6 +1,5 @@
 (function () {
     "use strict";
-    // var gmapsApi = 'http://maps.kimtrip.net';
     var gmapsApi = '//maps.googleapis.com/maps/api/geocode/json',
         jsonCompanies = '//rawgithub.com/j0k3r/SUPowerTools/master/companies.json',
         oldAddressValues = {},
@@ -14,6 +13,7 @@
         'doesnt_exist': "doesn't exist",
         'event_over': 'an event that has ended',
         'home_recategorize': 'a home',
+        'private': 'private',
     };
 
     // value that won't be shown as empty in /edit part
