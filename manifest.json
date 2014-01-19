@@ -16,7 +16,8 @@
     "web_accessible_resources": [
         "js/vendor/jquery-2.0.3.min.js",
         "js/vendor/jquery-2.0.3.min.map",
-        "js/supowertools.js"
+        "js/supowertools.js",
+        "companies.json"
     ],
     "content_scripts": [
         {

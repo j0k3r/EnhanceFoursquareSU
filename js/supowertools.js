@@ -1,7 +1,6 @@
 (function () {
     "use strict";
     var gmapsApi = '//maps.googleapis.com/maps/api/geocode/json',
-        jsonCompanies = '//rawgithub.com/j0k3r/SUPowerTools/master/companies.json',
         oldAddressValues = {},
         companies = [];
 
@@ -77,10 +76,7 @@
             foursquareStorage = fourSq.util.localStorage;
         }
 
-        // load companies
-        $.getJSON(jsonCompanies, function (data) {
-            companies = data;
-        });
+        companies = JSON.parse(localStorage.getItem('companies'));
     }
 
     /**
