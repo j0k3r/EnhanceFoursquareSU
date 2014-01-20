@@ -7,10 +7,6 @@
         "twitter": "",
         "url": "http://www.mcdonalds.fr"
     },
-    "Gare SNCF": {
-        "twitter": "infos_gares",
-        "url": "http://www.gares-en-mouvement.com"
-    },
     "Subway": {
         "twitter": "subwayfrance",
         "url": "http://www.subwayfrance.fr"
@@ -60,7 +56,7 @@
         "url": "http://www.fnac.com"
     },
     "Vélib": {
-        "twitter": "velib_paris",
+        "twitter": "velib",
         "url": "http://www.velib.paris.fr"
     },
     "Brioche Dorée": {
@@ -110,5 +106,13 @@
     "La Pataterie": {
         "twitter": "La_Pataterie",
         "url": "http://www.lapataterie.fr"
+    },
+    "Hippopotamus": {
+        "twitter": "",
+        "url": "http://www.hippopotamus.fr"
+    },
+    "Planet Sushi": {
+        "twitter": "PlanetSushi",
+        "url": "http://www.planetsushi.fr"
     }
 }

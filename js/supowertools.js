@@ -571,6 +571,7 @@
                         gRoute = addressComponent.long_name.trim();
                     } else {
                         if (addressComponent.types.indexOf("street_number") > -1) {
+                            // every thing lower case: https://www.facebook.com/groups/foursquare.french/permalink/481851148592353/?stream_ref=2
                             gStreeNumber = addressComponent.long_name.trim().toLowerCase();
                         } else {
                             if (addressComponent.types.indexOf("locality") > -1) {
@@ -683,11 +684,13 @@
                         if (regexCompany.exec(addressFormFields.name.val())) {
                             var companyFound = companies[index];
 
+                            // always update twitter account
                             if (companyFound.twitter !== addressFormFields.twitter.val()) {
                                 addressUpdated = updateFields(addressFormFields.twitter, companyFound.twitter);
                             }
 
-                            if (companyFound.url !== addressFormFields.url.val()) {
+                            // but don't always update url, it might already have a better url (more specific for the venue)
+                            if (0 === addressFormFields.url.val().length) {
                                 addressUpdated = updateFields(addressFormFields.url, companyFound.url);
                             }
 
