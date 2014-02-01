@@ -535,7 +535,14 @@
         // it will allow us to add a rollback link in that case
         var addressUpdated = false;
 
-        var dataUrl = "sensor=false&address=" + encodeURIComponent(query);
+        // determine if we have to use lat & long or just a real address
+        var dataUrl = "sensor=false&";
+        var regexLatLng = /([\-0-9]+)\.([0-9]+),([\-0-9]+)\.([0-9]+)/;
+        if (null !== regexLatLng.exec(query)) {
+            dataUrl = dataUrl + "latlng=" + query;
+        } else {
+            dataUrl = dataUrl + "address=" + encodeURIComponent(query);
+        }
 
         $.ajax({
             type: "GET",
