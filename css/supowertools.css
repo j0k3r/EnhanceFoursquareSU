@@ -54,3 +54,7 @@ div#su-powertools-stats.queueWrapper ul li .userInfo .userStats {
 #su-powertools-woesets {
     text-align: right;
 }
+
+#flag-contents .venueInfo {
+    min-height: 180px;
+}
