@@ -11,6 +11,8 @@
  - Add a required option to set the Google Maps API key
  - Add a link to "Tick all suggested detail"
  - Handle the new "location" instead of city/province
+ - Use lat/long each time we don't have enough information
+ - Cleanup bad venue name (De->de, D'or->d'Or)
 
 ## v0.2 (26/10/13)
 

@@ -39,12 +39,36 @@
      * @return name updated (or not)
      */
     String.prototype.convertCC = function convertCC() {
-        var regexCC = new RegExp('centre commercial', "i");
-        if (regexCC.exec(this)) {
-            return this.replace(/centre commercial/i, 'C.C');
+        return this.replace(/centre commercial/i, 'C.C');
+    };
+
+    /**
+     * convert mistake in name.
+     * Like:
+     *     - Hotel De Ville -> Hotel de Ville
+     *     - Pharmacie Du Cygne -> Pharmacie du Cygne
+     *     - Hotel L'ours -> Hotel l'Ours
+     *
+     * @return name updated (or not)
+     */
+    String.prototype.cleanupBadCase = function cleanupBadCase() {
+        var text = this;
+
+        // basic replacement
+        text = text.replace(/ Des /, ' des ');
+        text = text.replace(/ De /, ' de ');
+        text = text.replace(/ Du /, ' du ');
+        text = text.replace(/ D'/, " d'");
+
+        // uppercase the letter after the d'
+        var pos = text.indexOf(" d'");
+        if (-1 !== pos) {
+            var extractText = text.substr(pos + 3, text.length);
+            var cleanText = extractText.capitaliseFirstLetter();
+            text = text.replace(" d'"+extractText, " d'"+cleanText);
         }
 
-        return this;
+        return text;
     };
 
     /**
@@ -55,6 +79,16 @@
      */
     String.prototype.lowercaseFirstLetter = function lowercaseFirstLetter() {
         return this.charAt(0).toLowerCase() + this.slice(1);
+    };
+
+    /**
+     * Set first letter to upper case.
+     * Used for venue name
+     *
+     * @from http://stackoverflow.com/a/1026087/569101
+     */
+    String.prototype.capitaliseFirstLetter = function capitaliseFirstLetter() {
+        return this.charAt(0).toUpperCase() + this.slice(1);
     };
 
     /**
@@ -681,6 +715,12 @@
                 if (addressFormFields.name.val()) {
                     // convert "Centre Commercial" in "C.C"
                     var newName = addressFormFields.name.val().convertCC();
+                    if (newName !== addressFormFields.name.val()) {
+                        addressUpdated = updateFields(addressFormFields.name, newName);
+                    }
+
+                    // cleanup some bad case
+                    var newName = addressFormFields.name.val().cleanupBadCase();
                     if (newName !== addressFormFields.name.val()) {
                         addressUpdated = updateFields(addressFormFields.name, newName);
                     }
