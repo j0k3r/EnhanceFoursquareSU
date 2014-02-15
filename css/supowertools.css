@@ -36,7 +36,7 @@ div.accordian div.suggest-edit#su-powertools-auto-address {
     overflow: hidden;
     border: 1px solid #ccc;
     background: transparent;
-    color: #999999;
+    color: #999;
 }
 
 div#su-powertools-stats.queueWrapper ul li .userInfo .userStats {
@@ -57,4 +57,21 @@ div#su-powertools-stats.queueWrapper ul li .userInfo .userStats {
 
 #flag-contents .venueInfo {
     min-height: 180px;
+}
+
+.su-powertools-report-tip {
+    margin-top: -1px;
+}
+
+.su-powertools-report-tip span {
+    color: #999;
+    font-size: 11px;
+}
+
+.su-powertools-report-tip select {
+    overflow: hidden;
+    border: 1px solid #ccc;
+    background: transparent;
+    color: #999;
+    margin: 0;
 }

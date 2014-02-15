@@ -15,6 +15,12 @@
         'private': 'private',
     };
 
+    var flagReportReasons = {
+        'spam': 'spam',
+        'offensive': 'offensive',
+        'nolongerrelevant': 'no longer relevant',
+    };
+
     // value that won't be shown as empty in /edit part
     // we use only key for fastest search (using hasOwnProperty)
     var excludeEmptyValues = {
@@ -29,6 +35,7 @@
     // global Foursquare Object
     var foursquareNotifier,
         foursquareApiVenue,
+        foursquareApiTip,
         foursquareStorage;
 
     var flagInfos = { comment: 'Marked via SU Power Tools' };
@@ -103,6 +110,11 @@
         // initialize the Foursquare Venue API
         if (typeof foursquareApiVenue === "undefined") {
             foursquareApiVenue = fourSq.api.services.Venue;
+        }
+
+        // initialize the Foursquare Tip API
+        if (typeof foursquareApiTip === "undefined") {
+            foursquareApiTip = fourSq.api.services.Tip;
         }
 
         // initialize the Foursquare local storage
@@ -860,6 +872,83 @@
         });
     }
 
+    /**
+     * Add a dropdown select above each tip to quickly report it.
+     * It store the action in the localStorage, to avoid multiple report.
+     *
+     * @todo : remove flag from localStorage
+     */
+    function displayTipReport () {
+        var items = $('#allItems div.s-list-item-wrapper');
+
+        // avoid duplicate enhancement
+        if ($('.su-powertools-report-tip').html() || !items.html()) {
+            return;
+        }
+
+        // console.log(items.length);
+        var curItemId = 0;
+        var curItem = '';
+        var storageKey = '';
+
+        var select = '<select><option>Report tip</option>';
+        $.each(flagReportReasons, function (key, value) {
+            select += '<option value="' + key + '">' + value + '</option>';
+        });
+        select += '</select>';
+
+        items.each(function () {
+            curItem = $(this).children('div.s-list-item');
+            curItemId = curItem.attr('item-id').substring(1);
+
+            // check if current venue has already been flagged
+            storageKey = 'SPT-flagtip-'+curItemId;
+            if (true === foursquareStorage.exists(storageKey)) {
+                curItem.append('<div class="su-powertools-report-tip"><span>Already flagged as: <strong>' + flagReportReasons[foursquareStorage.get(storageKey)] + '</strong></span></div>');
+            } else {
+                curItem.append('<div class="su-powertools-report-tip" data-tip-id="' + curItemId + '">' + select + '</div>');
+            }
+        });
+
+        $('.su-powertools-report-tip select').change(function selectFlagTip() {
+            var select = $(this);
+            var problem = select.val();
+
+            if ('' === problem) {
+                return;
+            }
+
+            if (false === confirm('Do you want to flag this tip as: "' + flagReportReasons[problem] + '"')) {
+                // re-select the "default" option
+                select.children('option').first().prop('selected', true);
+                return;
+            }
+
+            var flagInfos = {
+                id: select.parent().data('tip-id'),
+                problem: problem
+            }
+
+            storageKey = 'SPT-flagtip-'+flagInfos.id;
+
+            // do flag a tip
+            foursquareApiTip.flag(
+                flagInfos,
+                function handleSuccess() {
+                    // store new flag for this tip
+                    foursquareStorage.set(storageKey, problem);
+
+                    foursquareNotifier.info('Tip reported as "' + flagReportReasons[problem] + '".');
+
+                    select.replaceWith('<span>Flagged as: <strong>' + flagReportReasons[problem] + '</strong> !</span>');
+                },
+                function handleError (response) {
+                    foursquareNotifier.error('Error: ' + response.response.meta.errorDetail);
+                }
+            );
+        });
+    }
+
     // be sure that every new venue will be updated
     setInterval(function () {
         initializeEnhanceBlock();
@@ -873,6 +962,9 @@
     }, 500);
 
     initialize();
+
+    // no need to check that each time
+    displayTipReport();
 
     /**
      * Check that we are on the dashboard

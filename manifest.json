@@ -25,7 +25,9 @@
                 "*://foursquare.com/edit*",
                 "*://*.foursquare.com/edit*",
                 "*://*.foursquare.com/v/*",
-                "*://foursquare.com/v/*"
+                "*://foursquare.com/v/*",
+                "*://*.foursquare.com/*/list/tips",
+                "*://foursquare.com/*/list/tips"
             ],
             "css": [
                 "css/supowertools.css"
