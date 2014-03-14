@@ -433,7 +433,7 @@
             state: $('input.formStyle.flagEditInput.state'),
             zip: $('input.formStyle.flagEditInput.zip'),
             city: $('input.formStyle.flagEditInput.city'),
-            location: $('input.formStyle.flagEditInput.location'),
+            location: $('input.formStyle.flagEditInput.location[name=location]'),
             twitter: $('input.formStyle.flagEditInput.twitter'),
             url: $('input.formStyle.flagEditInput.url')
         };
