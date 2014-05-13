@@ -267,6 +267,7 @@
      * It store the action in the localStorage, to avoid multiple report.
      *
      * @todo : remove flag from localStorage
+     * @deprecated
      */
     function displayFlagOptions() {
         var editPane = $('div.editPanes div.editPane');
@@ -333,6 +334,8 @@
      * Display a link below the "Edit this location" in edition panel
      * to automatically update address fields (address, state, zip & city) using Google Maps
      * It's displayed only when we have an address in the form.
+     *
+     * @deprecated
      */
     function displayFixAddress() {
         var editPane = $('div.editPanes div.editPane');
@@ -954,8 +957,8 @@
         initializeEnhanceBlock();
         enhanceSearch();
         displayEmptyValue();
-        displayFlagOptions();
-        displayFixAddress();
+        // displayFlagOptions();
+        // displayFixAddress();
         enhanceSearchSuggestEdit();
         displayFixAddressSuggestEdit();
         displaySelectAllWoe();

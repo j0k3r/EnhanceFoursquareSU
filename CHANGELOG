@@ -1,6 +1,10 @@
 # Su Power Tools - Changelog
 
-## v0.3 (...)
+## v0.4 (...)
+
+ - disable dropdown flag on /edit
+
+## v0.3 (14/03/14)
 
  - Rebranded to "Su Power Tools"
  - Use Foursquare notifier (to notify uh!)
