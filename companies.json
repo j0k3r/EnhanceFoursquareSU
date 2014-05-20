@@ -1,134 +1,167 @@
 {
     "Decathlon": {
         "twitter": "decathlonfrance",
+        "facebook": "facebook.com/Decathlon.France",
         "url": "http://www.decathlon.fr"
     },
     "McDonald's": {
         "twitter": "",
+        "facebook": "facebook.com/mcdonaldsfrance",
         "url": "http://www.mcdonalds.fr"
     },
     "Subway": {
         "twitter": "subwayfrance",
+        "facebook": "facebook.com/SubwayEnFrance",
         "url": "http://www.subwayfrance.fr"
     },
     "Buffalo Grill": {
         "twitter": "buffalogrill",
+        "facebook": "facebook.com/buffalogrill",
         "url": "http://www.buffalo-grill.fr"
     },
     "Carrefour": {
         "twitter": "carrefourfrance",
+        "facebook": "facebook.com/carrefour",
         "url": "http://www.carrefour.fr"
     },
     "Monop": {
         "twitter": "monoprix",
+        "facebook": "facebook.com/Monoprix",
         "url": "http://www.monoprix.fr"
     },
     "KFC": {
         "twitter": "kfcfrance",
+        "facebook": "facebook.com/KFC.France",
         "url": "http://www.kfc.fr"
     },
     "Etam": {
         "twitter": "etam_france",
+        "facebook": "facebook.com/etam",
         "url": "http://www.etam.com"
     },
     "BNP Paribas": {
         "twitter": "bnpparibas_net",
+        "facebook": "facebook.com/bnpparibas.net",
         "url": "http://www.bnpparibas.net"
     },
     "Norauto": {
         "twitter": "NorautoFr",
+        "facebook": "facebook.com/Norauto.France",
         "url": "http://www.norauto.fr"
     },
     "Flunch": {
         "twitter": "flunch",
+        "facebook": "facebook.com/flunch",
         "url": "http://www.flunch.fr"
     },
     "Simply Market": {
         "twitter": "SimplyMarketFr",
+        "facebook": "facebook.com/simply.market",
         "url": "http://www.simplymarket.fr"
     },
     "Domino": {
         "twitter": "dominos_pizzafr",
+        "facebook": "facebook.com/dominospizzafrance",
         "url": "http://www.dominos.fr"
     },
     "Fnac": {
         "twitter": "fnac",
+        "facebook": "facebook.com/Fnac",
         "url": "http://www.fnac.com"
     },
     "Vélib": {
         "twitter": "velib",
+        "facebook": "facebook.com/Velib.Paris",
         "url": "http://www.velib.paris.fr"
     },
     "Brioche Dorée": {
         "twitter": "brioche_doree",
+        "facebook": "facebook.com/briochedoreepageofficielle",
         "url": "http://www.briochedoree.fr"
     },
     "Franprix": {
         "twitter": "franprix",
+        "facebook": "facebook.com/franprix",
         "url": "http://www.franprix.fr"
     },
     "Sephora": {
         "twitter": "Sephora",
+        "facebook": "facebook.com/Sephora",
         "url": "http://www.sephora.fr"
     },
     "Paul": {
         "twitter": "PAUL__France",
+        "facebook": "facebook.com/paulmaisondequalitefondeeen1889",
         "url": "http://www.paul.fr"
     },
     "Picard": {
         "twitter": "picardsurgeles",
+        "facebook": "facebook.com/picardsurgeles",
         "url": "http://www.picard.fr"
     },
     "Darty": {
         "twitter": "Darty_Officiel",
+        "facebook": "facebook.com/darty",
         "url": "http://www.darty.com"
     },
     "Castorama": {
         "twitter": "castorama_fr",
+        "facebook": "facebook.com/castorama",
         "url": "http://www.castorama.fr"
     },
     "Go Sport": {
         "twitter": "gosportlive",
+        "facebook": "facebook.com/gosportfrance",
         "url": "http://www.go-sport.com"
     },
     "Conforama": {
         "twitter": "conforama",
+        "facebook": "facebook.com/Conforama",
         "url": "http://www.conforama.fr"
     },
     "Marionnaud": {
         "twitter": "Marionnaud_Fr",
+        "facebook": "facebook.com/Marionnaud.France",
         "url": "http://www.marionnaud.fr"
     },
     "Micromania": {
         "twitter": "Micromania_Fr",
+        "facebook": "facebook.com/MicromaniaFr",
         "url": "http://www.micromania.fr"
     },
     "La Pataterie": {
         "twitter": "La_Pataterie",
+        "facebook": "facebook.com/LaPataterie.fr",
         "url": "http://www.lapataterie.fr"
     },
     "Hippopotamus": {
         "twitter": "",
+        "facebook": "facebook.com/Hippopotamus",
         "url": "http://www.hippopotamus.fr"
     },
     "Planet Sushi": {
         "twitter": "PlanetSushi",
+        "facebook": "facebook.com/PlanetSushi",
         "url": "http://www.planetsushi.fr"
     },
     "Campanile": {
         "twitter": "HotelsCampanile",
+        "facebook": "facebook.com/",
         "url": "http://www.campanile.com/fr"
     },
     "Pomme de Pain": {
         "twitter": "PDP_recrute",
+        "facebook": "facebook.com/pommedepain.fr",
         "url": "http://pommedepain.fr"
     },
     "Sushi Shop": {
         "twitter": "SushiShopEU",
+        "facebook": "facebook.com/sushishop",
         "url": "https://www.sushishop.fr"
     },
     "Intersport": {
         "twitter": "intersport",
+        "facebook": "facebook.com/intersport.france",
         "url": "http://www.intersport.fr"
     }
 }

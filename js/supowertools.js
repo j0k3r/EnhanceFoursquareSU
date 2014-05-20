@@ -438,6 +438,7 @@
             city: $('input.formStyle.flagEditInput.city'),
             location: $('input.formStyle.flagEditInput.location[name=location]'),
             twitter: $('input.formStyle.flagEditInput.twitter'),
+            facebook: $('input.formStyle.flagEditInput.facebookUrl'),
             url: $('input.formStyle.flagEditInput.url')
         };
 
@@ -487,6 +488,7 @@
                 event.data.addressFormFields.state.css('color', '#4d4d4d');
                 event.data.addressFormFields.city.css('color', '#4d4d4d');
                 event.data.addressFormFields.twitter.css('color', '#4d4d4d');
+                event.data.addressFormFields.facebook.css('color', '#4d4d4d');
                 event.data.addressFormFields.url.css('color', '#4d4d4d');
 
                 var rollbackBlock = $('#su-powertools-auto-address-rollback');
@@ -541,6 +543,9 @@
         addressFields.twitter.val(oldAddressValues.twitter);
         addressFields.twitter.css('color', '#4d4d4d');
 
+        addressFields.facebook.val(oldAddressValues.facebook);
+        addressFields.facebook.css('color', '#4d4d4d');
+
         addressFields.url.val(oldAddressValues.url);
         addressFields.url.css('color', '#4d4d4d');
 
@@ -572,6 +577,7 @@
                 zip: addressFormFields.zip.val(),
                 city: addressFormFields.city.val(),
                 twitter: addressFormFields.twitter.val(),
+                facebook: addressFormFields.facebook.val(),
                 url: addressFormFields.url.val()
             };
 
@@ -749,6 +755,11 @@
                             // always update twitter account
                             if (companyFound.twitter !== addressFormFields.twitter.val()) {
                                 addressUpdated = updateFields(addressFormFields.twitter, companyFound.twitter);
+                            }
+
+                            // always update facebook account
+                            if (companyFound.facebook !== addressFormFields.facebook.val()) {
+                                addressUpdated = updateFields(addressFormFields.facebook, companyFound.facebook);
                             }
 
                             // but don't always update url, it might already have a better url (more specific for the venue)
