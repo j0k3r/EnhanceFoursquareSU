@@ -1072,7 +1072,8 @@
                     'info': 'Address suggestions',
                     'uncategorized': 'Suggest categories',
                     'duplicate': 'Merge suggestions',
-                    'private': 'Places as private'
+                    'private': 'Places as private',
+                    'photo': 'Flagged photos'
                 };
 
                 /**
