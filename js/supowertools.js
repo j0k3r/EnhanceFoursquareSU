@@ -145,7 +145,7 @@
             return;
         }
 
-        $('#overlayHeader div.venueInfo.hasRedMarker').prepend('<p id="su-powertools-block"></p>');
+        $('#overlayHeader div.venueInfo').prepend('<p id="su-powertools-block"></p>');
     }
 
     /**
@@ -188,12 +188,12 @@
 
         // add twitter next to the venue url
         var twitter = $('li.field.simpleField[data-key="twitter"] input').val();
-        if (typeof twitter !== "undefined" && '' !== twitter) {
+        if (typeof twitter !== "undefined" && '' !== twitter && !$('div.venueInfoText p.venueUrl a.url.twitter').html()) {
             var venueUrl = $('div.venueInfoText p.venueUrl');
             if (!venueUrl.length) {
                 $('div.venueInfoText').append('<p class="venueUrl"></p>');
             }
-            $('div.venueInfoText p.venueUrl').append(' - <a class="url" href="http://twitter.com/' + twitter + '" target="_blank">@' + twitter + '</a>');
+            $('div.venueInfoText p.venueUrl').append(' - <a class="url twitter" href="http://twitter.com/' + twitter + '" target="_blank">@' + twitter + '</a>');
         }
     }
 
