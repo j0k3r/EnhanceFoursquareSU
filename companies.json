@@ -163,5 +163,10 @@
         "twitter": "intersport",
         "facebook": "facebook.com/intersport.france",
         "url": "http://www.intersport.fr"
+    },
+    "La Poste": {
+        "twitter": "lisalaposte",
+        "facebook": "facebook.com/laposte",
+        "url": "http://www.laposte.fr"
     }
 }
