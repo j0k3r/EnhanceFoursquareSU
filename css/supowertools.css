@@ -75,3 +75,7 @@ div#su-powertools-stats.queueWrapper ul li .userInfo .userStats {
     color: #999;
     margin: 0;
 }
+
+#modalDialogBox {
+    margin-top: 0 !important;
+}
