@@ -145,7 +145,7 @@
             return;
         }
 
-        $('#overlayHeader div.venueInfo').prepend('<p id="su-powertools-block"></p>');
+        $('#overlayHeader div.venueInfo').prepend('<p id="su-powertools-block">&nbsp;</p>');
     }
 
     /**
@@ -156,20 +156,21 @@
      * - Move both link above the venue name
      */
     function enhanceSearch() {
-        var searchLink = $('div.venueInfoText a.searchLink');
+        var venueLinks = $('div.venueInfoText ul.venueLinks');
+        var searchLink = venueLinks.find('span.searchIcon').parent();
 
         // avoid duplicate enhancement
-        if ($('#su-powertools-search').html() || !searchLink.html()) {
+        if ($('#su-powertools-search').html() || !venueLinks.html()) {
             return;
         }
 
-        searchLink.hide();
+        venueLinks.attr('id', 'su-powertools-search');
 
         var hrefGoogle = searchLink
             .attr('href')
             .replace('bing.com', 'google.com/search');
 
-        var searchGoogle = '<a target="_blank" href="' + hrefGoogle + '">Google</a>';
+        searchLink.attr('href', hrefGoogle);
 
         // remove crossStreet from address to get more accurate results
         var address = $('div.venueInfoText p.addressArea').html();
@@ -182,9 +183,9 @@
             encodeURIComponent($('h4 a:first').html()) + ' ' +
             encodeURIComponent(address);
 
-        var searchMaps = '<a target="_blank" href="' + hrefMaps + '">Google Maps</a>';
+        var searchMaps = '<li><a href="' + hrefMaps + '" target="_blank"><span class="linkIcon searchIcon"></span>Search on Maps</a></li>';
 
-        $('#su-powertools-block').append('<span id="su-powertools-search">Search on: ' + searchGoogle + ' - ' + searchMaps + '</span>');
+        venueLinks.append(searchMaps);
 
         // add twitter next to the venue url
         var twitter = $('li.field.simpleField[data-key="twitter"] input').val();
