@@ -901,7 +901,6 @@
             return;
         }
 
-        // console.log(items.length);
         var curItemId = 0;
         var curItem = '';
         var storageKey = '';
