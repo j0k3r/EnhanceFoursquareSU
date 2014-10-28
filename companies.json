@@ -168,5 +168,10 @@
         "twitter": "lisalaposte",
         "facebook": "facebook.com/laposte",
         "url": "http://www.laposte.fr"
+    },
+    "Europcar": {
+        "twitter": "europcar",
+        "facebook": "facebook.com/europcarfrance",
+        "url": "http://www.europcar.fr"
     }
 }
