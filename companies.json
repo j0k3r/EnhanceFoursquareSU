@@ -173,5 +173,10 @@
         "twitter": "europcar",
         "facebook": "facebook.com/europcarfrance",
         "url": "http://www.europcar.fr"
+    },
+    "Intermarché": {
+        "twitter": "intermarche",
+        "facebook": "facebook.com/tousuniscontrelaviechere",
+        "url": "http://www.intermarche.com"
     }
 }
