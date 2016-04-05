@@ -993,7 +993,7 @@
                     '<h2>Thanks for installing SU Power Tools !</h2>' +
                     "<p><em>This message won't appear anymore after this step is completed.</em></p>"+
                     "<p>In order to use the Google Maps API to automatically fix address you need to provide a Google Maps API key. Don't worry, if you already have a Google Account, it will be a very easy step.</p>"+
-                    '<p>Everything is clearly explain <a href="https://developers.google.com/maps/documentation/javascript/tutorial#api_key" target="_blank">here</a>. Once you have your key, just past it in the input below. </p>' +
+                    '<p>Everything is clearly explain <a href="https://developers.google.com/maps/documentation/javascript/get-api-key" target="_blank">here</a>. Once you have your key, just past it in the input below. </p>' +
                     '<input type="text" id="gmaps_api_key">' +
                     '<button id="save">Save</button>' +
                 '</div>';
